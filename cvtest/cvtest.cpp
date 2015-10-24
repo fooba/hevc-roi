@@ -22,8 +22,13 @@ char key;
 * @brief start an openCV session to the webcam and detect faces in stream
 *        quit with escape-btn
 */
-void startCV(void);
+void startCam(void);
 
+/**
+* @brief start an openCV session to the webcam and detect faces in stream
+*        quit with escape-btn
+*/
+void startVid(void);
 
 /**
 * @brief detectFaces detektiert Gesichter im uebergebenen frame.
@@ -46,27 +51,27 @@ int main(){
 
 	//imshow("Image", im);
 
-	startCV();
+	startVid();
 	waitKey(0);
 	return 0;
 }
 
+void startCam(void){
+	cout << "clicked" << endl;
 
-void startCV(void){
-	cout << "clicked"<<endl;
-
-	CvCapture* capture;
+	VideoCapture capture;
 	Mat frame;
 
 	//-- 1. Load the cascades
 	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return; };
 
 	//-- 2. Read the video stream
-	capture = cvCaptureFromCAM(CV_CAP_ANY); //Webcam
+	capture.open(0); 
 
 	while (1){
-		if (capture){
-			frame = cvQueryFrame(capture); //Create image frames from capture
+		if (capture.isOpened()){
+
+			capture.read(frame);
 			if (!frame.empty()){
 				std::vector<Rect> faces = detectFaces(frame);
 				for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
@@ -90,8 +95,51 @@ void startCV(void){
 		}
 	}
 
-	cvReleaseCapture(&capture); //Release capture.
+//	cvReleaseCapture(&capture); //Release capture.
 }
+
+void startVid(void){
+	cout << "clicked" << endl;
+
+	VideoCapture capture;
+	Mat frame;
+
+	//-- 1. Load the cascades
+	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return; };
+
+	//-- 2. Read the video stream
+	capture.open("C:/test3.mov");
+
+	while (1){
+		if (capture.isOpened()){
+
+			capture.read(frame);
+			if (!frame.empty()){
+				std::vector<Rect> faces = detectFaces(frame);
+				for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
+				{
+					Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
+					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
+					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
+				}
+				imshow(window_name, frame); //Zeige frame
+			}
+			else{
+				wait4Cam--;
+				if (wait4Cam <= 0)
+					printf(" --(!) No captured frame -- :( !");
+			}
+		}
+		else cout << "keine Webcam ";
+		key = cvWaitKey(10);     //Capture Keyboard stroke
+		if (char(key) == 27){
+			break;      //If you hit ESC key loop will break.
+		}
+	}
+
+	//	cvReleaseCapture(&capture); //Release capture.
+}
+
 
 vector<Rect> detectFaces(Mat frame){
 	std::vector<Rect> faces;
