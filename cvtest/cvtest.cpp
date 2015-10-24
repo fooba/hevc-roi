@@ -108,9 +108,9 @@ void startVid(void){
 	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return; };
 
 	//-- 2. Read the video stream
-	capture.open("C:/test3.mov");
+	capture.open("C:/testjb.mov");
 
-	while (1){
+	while (capture.isOpened()){
 		if (capture.isOpened()){
 
 			capture.read(frame);
