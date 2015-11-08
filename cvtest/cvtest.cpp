@@ -434,7 +434,7 @@ bool querryFrame(void){
 			
 			sws_scale(pVImgConvertCtx, pVFrame->data, pVFrame->linesize, 0, pVCodecCtx->height, pVFrameBGR->data, pVFrameBGR->linesize);
 
-			//OpenCV
+			//OpenCV 
 			for (int y = 0; y < pVCodecCtx->height; y++){
 				for (int x = 0; x < pVCodecCtx->width; x++){
 					cvFrameContext.at<cv::Vec3b>(y, x)[0] = pVFrameBGR->data[0][y * pVFrameBGR->linesize[0] + x * 3 + 0];
