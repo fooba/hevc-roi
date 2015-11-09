@@ -117,7 +117,9 @@ int main(){
 		cout << "frame " << ++i << endl;
 		cout << "context: " << (int)cvFrameContext.data << endl;
 		//querryFrame();
-		cv::imshow("test", inFrames);
+		//if (frameFinished)
+			cv::imshow("test", cvFrameContext);
+			waitKey(1);
 	}
 /*
 	//ret = startCam();
@@ -404,7 +406,7 @@ bool ffmpegopenVid(const char * filename){
 	bufferBGR = (uint8_t *)av_mallocz(numBytes*sizeof(uint8_t));
 	avpicture_fill((AVPicture*)pVFrameBGR, bufferBGR, AV_PIX_FMT_BGR24, pVCodecCtx->width, pVCodecCtx->height);
 
-	inFrames.create(pVCodecCtx->height, pVCodecCtx->width, CV_8UC(3));
+	cvFrameContext.create(pVCodecCtx->height, pVCodecCtx->width, CV_8UC(3));
 	return errorStatus;
 }
 
@@ -424,6 +426,7 @@ bool querryFrame(void){
 
 		if (frameFinished){
 			cout << "frame finished" << endl;
+			frameFinished = 0;
 			if (pVImgConvertCtx == NULL){
 				pVImgConvertCtx = sws_getContext(pVCodecCtx->width, pVCodecCtx->height, pVCodecCtx->pix_fmt, pVCodecCtx->width, pVCodecCtx->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 			}
