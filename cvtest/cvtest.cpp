@@ -39,6 +39,7 @@ const std::string outputfilename = "C:\\out.mkv";
 const std::string backgroundname   = "C:\\background.mkv";
 const int fourcc_output_codec =  CV_FOURCC('P', 'I', 'M', '1');
 std::vector<facesfromframe> facesVideo;
+static int framecounter;
 
 String test;
 cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
@@ -91,6 +92,10 @@ bool ffmpegopenVid(const char * filename);
 */
 vector<Rect> detectFaces(Mat frame);
 
+/**
+* @brief  Verarbeitet ein neues Frame des Input Videos
+* @return neuer Frame verfuegbar??
+*/
 bool querryFrame(void);
 
 
@@ -118,7 +123,8 @@ int main(){
 		cout << "context: " << (int)cvFrameContext.data << endl;
 		//querryFrame();
 		//if (frameFinished)
-			cv::imshow("test", cvFrameContext);
+			//cv::imshow("test", cvFrameContext);
+		startVid();
 			waitKey(1);
 	}
 /*
@@ -189,6 +195,8 @@ void startCam(void){
 }
 
 int startVid(void){
+	cout << "Face detection " << endl;
+	/*
 	cout << "\t Load input, detect faces and encode Background:\n" << endl;
 
 	VideoCapture capture;
@@ -229,28 +237,33 @@ int startVid(void){
 	return -1;
 	}
 	
+	
 	Mat roi;
 	while (capture.read(frame)){
-		cout << "Frame " << framecounter++ << endl;
+	*/
+		
 
-		if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
+		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
 
-		if (!frame.empty()){
-			std::vector<Rect> faces = detectFaces(frame);
+		if (!cvFrameContext.empty()){
+			cout << "Frame " << framecounter++ << endl;
+			std::vector<Rect> faces = detectFaces(cvFrameContext);
+			cout << "numbers of detected faces: " << faces.size() << endl;
 			for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
 			{
+				cout << "face " << i << endl;;
 
 #ifdef WITH_FACE_RECTANGLE
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
-				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
+				rectangle(cvFrameContext, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
 
 				//Region of Interest = gesicht
-				roi = frame(faces.at(i));
+				Mat roi = cvFrameContext(faces.at(i));
 #ifdef SHOW_DETECTED_FACES
 				imshow("roi", roi);
-				waitKey(1);
+				cv::waitKey(1);
 #endif
 				//fuer speicherung
 				vector<Mat> dummyFaces;
@@ -262,16 +275,12 @@ int startVid(void){
 				facesVideo.push_back(dummy);
 			}
 #ifdef SHOW_DETECTED_FACES			
-			imshow(window_name, frame); //Zeige frame //TODO auskommentiert schneller??
+			imshow(window_name, cvFrameContext); //Zeige frame //TODO auskommentiert schneller??
 			waitKey(1);
 #endif
-			outputVideo << frame; //Schreibe frame in output video
+			//	outputVideo << frame; //Schreibe frame in output video
+
 		}
-		else{
-			break;
-		}
-	}
-	cout << "Facerecognition... ready" << endl;
 	return 0;
 }
 
