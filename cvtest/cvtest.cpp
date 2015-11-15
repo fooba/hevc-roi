@@ -39,7 +39,7 @@ const std::string outputfilename = "C:\\out.mkv";
 const std::string backgroundname   = "C:\\background.mkv";
 const int fourcc_output_codec =  CV_FOURCC('P', 'I', 'M', '1');
 std::vector<facesfromframe> facesVideo;
-static int framecounter;
+static int framecounter=0;
 
 String test;
 cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
@@ -195,16 +195,15 @@ void startCam(void){
 }
 
 int startVid(void){
-	cout << "Face detection " << endl;
 	/*
 	cout << "\t Load input, detect faces and encode Background:\n" << endl;
 
 	VideoCapture capture;
 	Mat frame;
-
+	*/
 	//-- 1. Load the cascades
 	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return -1; };
-
+	/*
 	//-- 2. Read the video stream
 	capture.open(inputfilename);
 	int framecounter = 0;
@@ -246,13 +245,9 @@ int startVid(void){
 		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
 
 		if (!cvFrameContext.empty()){
-			cout << "Frame " << framecounter++ << endl;
 			std::vector<Rect> faces = detectFaces(cvFrameContext);
-			cout << "numbers of detected faces: " << faces.size() << endl;
 			for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
 			{
-				cout << "face " << i << endl;;
-
 #ifdef WITH_FACE_RECTANGLE
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
@@ -266,6 +261,7 @@ int startVid(void){
 				cv::waitKey(1);
 #endif
 				//fuer speicherung
+				/*
 				vector<Mat> dummyFaces;
 				dummyFaces.push_back(roi);
 				facesfromframe dummy;
@@ -273,6 +269,7 @@ int startVid(void){
 				dummy.facesinframe = faces;
 				dummy.faces = dummyFaces;
 				facesVideo.push_back(dummy);
+				*/
 			}
 #ifdef SHOW_DETECTED_FACES			
 			imshow(window_name, cvFrameContext); //Zeige frame //TODO auskommentiert schneller??
@@ -290,14 +287,14 @@ vector<Rect> detectFaces(Mat frame){
 	Mat frame_gray;
 
 	cvtColor(frame, frame_gray, CV_BGR2GRAY);
-	equalizeHist(frame_gray, frame_gray);
+	equalizeHist(frame_gray, frame_gray); //Normalisiere Histogram
 
 	//-- Detect faces
-	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-
+	face_cascade.detectMultiScale(frame_gray, faces);// , 1.1, 3, 0);// | CV_HAAR_SCALE_IMAGE, Size(30, 30));
 	return faces;
 }
 
+//TODO Unused
 int encodeToOne(void){
 	cout << "\t Put faces in ecoded Background and encode both together " << endl; 
 	
@@ -420,7 +417,6 @@ bool ffmpegopenVid(const char * filename){
 }
 
 bool querryFrame(void){
-	cout << "querryFrame" << endl;
 	if (av_read_frame(pVFormatCtx, &pVPacket) < 0){
 		cout << "ERROR:queryFram:Could nor read frame!" << endl;
 		return false;
