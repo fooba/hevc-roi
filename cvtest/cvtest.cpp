@@ -19,10 +19,9 @@ extern "C" {
 #include <libavutil\mem.h>
 }
 
-/*
+
 //x265
-#include "x265.h"
-*/
+#include <x265.h>
 
 using namespace cv;
 using namespace std;
@@ -455,6 +454,8 @@ bool querryFrame(void){
 	return true;
 }
 
+
+//TODO unuse now maybe
 static bool decodeHEVC(const char *filename){
 	AVCodec * codec;
 	AVCodecContext *c = NULL;
