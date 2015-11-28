@@ -19,6 +19,11 @@ extern "C" {
 #include <libavutil\mem.h>
 }
 
+/*
+//x265
+#include "x265.h"
+*/
+
 using namespace cv;
 using namespace std;
 
@@ -34,9 +39,9 @@ typedef struct{
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 
-const std::string inputfilename = "C:\\testshort.mp4";
+const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string outputfilename = "C:\\out.mkv";
-const std::string backgroundname   = "C:\\background.mkv";
+const std::string backgroundname = "C:\\background.mkv";
 const int fourcc_output_codec =  CV_FOURCC('P', 'I', 'M', '1');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
@@ -120,12 +125,14 @@ int main(){
 	int i = 0;
 	while (querryFrame()){
 		cout << "frame " << ++i << endl;
-		cout << "context: " << (int)cvFrameContext.data << endl;
 		//querryFrame();
 		//if (frameFinished)
 			//cv::imshow("test", cvFrameContext);
 		startVid();
-			waitKey(1);
+#ifdef SHOW_DETECTED_FACES			
+		imshow(window_name, cvFrameContext); //Zeige frame //TODO auskommentiert schneller??
+		waitKey(1);
+#endif
 	}
 /*
 	//ret = startCam();
@@ -241,7 +248,7 @@ int startVid(void){
 	while (capture.read(frame)){
 	*/
 		
-
+	
 		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
 
 		if (!cvFrameContext.empty()){
@@ -256,10 +263,6 @@ int startVid(void){
 
 				//Region of Interest = gesicht
 				Mat roi = cvFrameContext(faces.at(i));
-#ifdef SHOW_DETECTED_FACES
-				imshow("roi", roi);
-				cv::waitKey(1);
-#endif
 				//fuer speicherung
 				/*
 				vector<Mat> dummyFaces;
@@ -271,10 +274,7 @@ int startVid(void){
 				facesVideo.push_back(dummy);
 				*/
 			}
-#ifdef SHOW_DETECTED_FACES			
-			imshow(window_name, cvFrameContext); //Zeige frame //TODO auskommentiert schneller??
-			waitKey(1);
-#endif
+
 			//	outputVideo << frame; //Schreibe frame in output video
 
 		}
@@ -452,5 +452,55 @@ bool querryFrame(void){
 			}
 		}
 	}
+	return true;
+}
+
+static bool decodeHEVC(const char *filename){
+	AVCodec * codec;
+	AVCodecContext *c = NULL;
+	int i, ret, x, y, got_output;
+	FILE *f;
+	AVFrame *frame;
+	AVPacket pkt;
+	uint8_t encode[] = { 0, 0, 1, 0xb7 };
+
+	av_init_packet(&pkt);
+
+	//Find HEVC encoder
+	codec = avcodec_find_encoder(AV_CODEC_ID_HEVC);
+	if (!codec){
+		cout << "ERROR:output HEVC encoder not found" << endl;
+		return false;
+	}
+	c = avcodec_alloc_context3(codec);
+	if (!c){
+		cout << "ERROR:Could not allocate video codec context\n" << endl;
+		return false;
+	}
+
+
+	c->bit_rate = 400000;
+	c->width  = pVFrame->width;
+	c->height = pVFrame->height;
+	//fps
+//	c->time_base = (AVRational){1,25};
+	c->gop_size = 10;
+	c->max_b_frames = 0; //TODO
+	c->pix_fmt = AV_PIX_FMT_YUV420P;
+	
+	//open
+	if (avcodec_open2(c, codec, NULL) < 0){
+		cout << "ERROR:Could not open HEVC Encoder" << endl;
+		return false;
+	}
+
+	f = fopen(filename, "wb");
+	if (!f){
+		cout << "ERROR: Could not open Output file: " << filename << endl;
+		return false;
+	}
+
+
+
 	return true;
 }

@@ -47,8 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\opencv2411\opencv\build\include;C:\ffmpeg\dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv2411\opencv\build\x86\vc12\lib;C:\ffmpeg\dev\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\opencv2411\opencv\build\include;C:\ffmpeg\dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Users\Julian.T-mobile\X265\source</IncludePath>
+    <LibraryPath>C:\opencv2411\opencv\build\x86\vc12\lib;C:\ffmpeg\dev\lib;D:\Users\Julian.T-mobile\X265\build\vc12-x86\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -78,7 +78,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opencv_calib3d2411.lib;opencv_contrib2411.lib;opencv_core2411.lib;opencv_features2d2411.lib;opencv_flann2411.lib;opencv_gpu2411.lib;opencv_highgui2411.lib;opencv_imgproc2411.lib;opencv_legacy2411.lib;opencv_ml2411.lib;opencv_nonfree2411.lib;opencv_objdetect2411.lib;opencv_photo2411.lib;opencv_stitching2411.lib;opencv_ts2411.lib;opencv_video2411.lib;opencv_videostab2411.lib;avcodec.lib;avformat.lib;avutil.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_calib3d2411.lib;opencv_contrib2411.lib;opencv_core2411.lib;opencv_features2d2411.lib;opencv_flann2411.lib;opencv_gpu2411.lib;opencv_highgui2411.lib;opencv_imgproc2411.lib;opencv_legacy2411.lib;opencv_ml2411.lib;opencv_nonfree2411.lib;opencv_objdetect2411.lib;opencv_photo2411.lib;opencv_stitching2411.lib;opencv_ts2411.lib;opencv_video2411.lib;opencv_videostab2411.lib;avcodec.lib;avformat.lib;avutil.lib;swscale.lib;x265.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
