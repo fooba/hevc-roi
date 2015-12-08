@@ -39,11 +39,13 @@ typedef struct{
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 
 const std::string inputfilename  = "C:\\testshort.mp4";
-const std::string outputfilename = "C:\\out.mkv";
-const std::string backgroundname = "C:\\background.mkv";
-const int fourcc_output_codec =  CV_FOURCC('P', 'I', 'M', '1');
+const std::string roistr = "C:\\faces.mkv";
+const std::string videostr = "C:\\video.mkv";
+const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
+VideoWriter outputVideo;
+Size S;
 
 String test;
 cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
@@ -102,6 +104,11 @@ vector<Rect> detectFaces(Mat frame);
 */
 bool querryFrame(void);
 
+/**
+ * @brief encodiert als HEVC mit Command-line Prompt
+*/
+int encodeCmd(std::string filename);
+
 
 int main(){
 	//Zeitmessung
@@ -111,48 +118,45 @@ int main(){
 	av_register_all();
 
 	start = clock();
-
-	//pVFormatCtx = new AVFormatContext();
-	//pVCodecCtx = new AVCodecContext();
-	//pVCodec = new AVCodec();
-	//pVFrame = new AVFrame();
-	//pVFrameBGR = new AVFrame();
-	//bufferBGR = new uint8_t();
-
+	
 	int ret = 0;
 	ffmpegopenVid(inputfilename.c_str());
+
+	//Video Output
+	S = Size(pVCodecCtx->height, pVCodecCtx->width);
+	double fps = pVCodecCtx->framerate.num; //ToDo fps
+	if (!outputVideo.open(videostr, fourcc_output_codec, fps, S, true)){ //out
+		//if (!outputVideo.open("C:/outshort.yuv", CV_FOURCC('X', '2', '6', '4'), fps, S, true)){ //out
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('H', 'E', 'V', 'C'), fps, S, true)){ //out
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('P', 'I', 'M', '1'), fps, S, true)){ //out //works but mov
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('Y', 'V', '1', '2'), fps, S, true)){ //out
+		cout << "Could not create Video writer...." << endl;
+		return -1;
+	}
+
 	int i = 0;
 	while (querryFrame()){
 		cout << "frame " << ++i << endl;
 		//querryFrame();
 		//if (frameFinished)
 			//cv::imshow("test", cvFrameContext);
-		startVid();
+		ret = startVid();
 #ifdef SHOW_DETECTED_FACES			
-		imshow(window_name, cvFrameContext); //Zeige frame //TODO auskommentiert schneller??
+		imshow(window_name, cvFrameContext); 
 		waitKey(1);
 #endif
 	}
-/*
-	//ret = startCam();
-	ret = startVid();
+
 	if (ret != 0){
 		cout << "Error " << ret << " ... closing now" << endl;
 		waitKey(0);
 	}
 	else{
-		elapsedafterfacedet = (float)(clock() - start) / CLOCKS_PER_SEC;
-		start = clock(); //reset clock
-
-		ret = encodeToOne();
-		if (ret != 0){
-			cout << "Error " << ret << " ... closing now" << endl;
-			waitKey(0);
-		}
+		encodeCmd(roistr);
+		encodeCmd(videostr);
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-	cout << "Time for Facedetection: " << elapsedafterfacedet << " Time for Encoding together: " << elapsed << " Sum: " << elapsedafterfacedet + elapsed << endl;
-*/
+	cout << "elapsed Time: " << elapsed << endl;
 	cin.ignore();
 	return ret;
 }
@@ -218,23 +222,8 @@ int startVid(void){
 		cout << "Can't open Video..." << endl;
 		return -1;
 	}
-
+	*/
 	//Groesse des Input Vids
-	Size S = Size((int)capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
-		(int)capture.get(CV_CAP_PROP_FRAME_HEIGHT));
-	double fps = capture.get(CV_CAP_PROP_FPS); //fps
-
-	//Video Output
-	VideoWriter outputVideo;
-	if (!outputVideo.open(backgroundname, fourcc_output_codec, fps, S, true)){ //out
-	//if (!outputVideo.open("C:/outshort.yuv", CV_FOURCC('X', '2', '6', '4'), fps, S, true)){ //out
-	//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('H', 'E', 'V', 'C'), fps, S, true)){ //out
-	//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('P', 'I', 'M', '1'), fps, S, true)){ //out //works but mov
-	//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('Y', 'V', '1', '2'), fps, S, true)){ //out
-		cout << "Could not create Video writer...." << endl;
-		return -1;
-	}
-
 
 	if (!outputVideo.isOpened())
 	{
@@ -244,8 +233,8 @@ int startVid(void){
 	
 	
 	Mat roi;
-	while (capture.read(frame)){
-	*/
+	//while (capture.read(frame)){
+	
 		
 	
 		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
@@ -262,8 +251,8 @@ int startVid(void){
 
 				//Region of Interest = gesicht
 				Mat roi = cvFrameContext(faces.at(i));
-				//fuer speicherung
 				/*
+				//fuer speicherung
 				vector<Mat> dummyFaces;
 				dummyFaces.push_back(roi);
 				facesfromframe dummy;
@@ -272,11 +261,14 @@ int startVid(void){
 				dummy.faces = dummyFaces;
 				facesVideo.push_back(dummy);
 				*/
+				
 			}
 
-			//	outputVideo << frame; //Schreibe frame in output video
+			cout << "Writing..." << endl;
+			outputVideo << cvFrameContext; //Schreibe frame in output video
 
 		}
+		else cout << "ERROR: Null Frame..." << endl;
 	return 0;
 }
 
@@ -291,65 +283,6 @@ vector<Rect> detectFaces(Mat frame){
 	//-- Detect faces
 	face_cascade.detectMultiScale(frame_gray, faces);// , 1.1, 3, 0);// | CV_HAAR_SCALE_IMAGE, Size(30, 30));
 	return faces;
-}
-
-//TODO Unused
-int encodeToOne(void){
-	cout << "\t Put faces in ecoded Background and encode both together " << endl; 
-	
-	//in
-	VideoCapture inputFile;
-	inputFile.open(backgroundname);
-	if (! inputFile.isOpened() ){
-		cout << "Can't open tempory Video File..." << endl;
-		return -1;
-	}
-	Mat frame;
-
-	//Define Params for output
-	Size S = Size((int)inputFile.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
-		(int)inputFile.get(CV_CAP_PROP_FRAME_HEIGHT));
-	double fps = inputFile.get(CV_CAP_PROP_FPS); //fps
-
-	//out
-	VideoWriter outputFile;
-	if (! outputFile.open(outputfilename, fourcc_output_codec, fps, S, true) ){ //out
-		cout << "Can' creat VideoWriter for output...";
-	}
-	if (! outputFile.isOpened() ){
-		cout << "Can't open Video for writing out" << endl;
-		return -1;
-	}
-
-	//Put together
-	int inputframeno=0;
-	while (inputFile.read(frame)){ //read
-		cout << "frame " << inputframeno++ << endl;
-		// put face in frame when needed
-		facesfromframe* dummy = &facesVideo.at(0);
-		if (dummy->frameno == inputframeno){ //Gesicht in frame muss hinzugefuegt werden
-			for (int i = 0; i < dummy->faces.size(); i++){ //Fuer alle Faces im Frame
-				Point ol(dummy->facesinframe.at(i).x, dummy->facesinframe.at(i).y); //Oben links vom Gesicht
-				Point ur(dummy->facesinframe.at(i).x + dummy->facesinframe.at(i).width, dummy->facesinframe.at(i).y + dummy->facesinframe.at(i).height); //Unten rechts vom Gesicht
-
-				//Go through frame and change to not encoded roi
-				int indexx = 0, indexy = 0;
-				for (int y = ol.y; y <= ur.y; y++){ //go through lines
-					for (int x = ol.x; x <= ur.x; x++){ //go through elements
-						frame.at<double>(Point(x,y)) = dummy->faces.at(i).at<double>(Point(indexx, indexy)); //TODO KACKT AB
-						indexx++; indexy;
-					}
-				}
-			}
-		}
-		imshow("out",frame);
-		waitKey(1);
-		outputFile << frame; //write out
-	}
-
-
-	cout << "Ready :D" << endl;
-	return 0;
 }
 
 bool ffmpegopenVid(const char * filename){
@@ -455,13 +388,34 @@ bool querryFrame(void){
 }
 
 
+int encodeCmd(std::string filename){
+	int ret = 0;
+	std::string befehl = "ffmpeg - i "+filename+" - c:v libx265 - preset medium - x265 - params crf = 28 - c : a aac - strict experimental - b : a 128k out_"+filename;
+	ret = system(befehl.c_str());	
+	return ret;
+}
+
+/*
+void x265Encoding(){
+	x265_param *param = x265_param_alloc();
+	int x265_param_default_preset(param, const char *preset, const char *tune);
+	int x265_param_apply_profile(param, const char *profile);
+
+	for (faces){
+		int x265_param_parse(param, "display-window", const char *value);
+	}
+
+	x265_encoder* enc = x265_encoder_open(param);
+
+}
+*/
 //TODO unuse now maybe
 static bool decodeHEVC(const char *filename){
 	AVCodec * codec;
 	AVCodecContext *c = NULL;
 	int i, ret, x, y, got_output;
 	FILE *f;
-	AVFrame *frame;
+	AVFrame *picture;
 	AVPacket pkt;
 	uint8_t encode[] = { 0, 0, 1, 0xb7 };
 
@@ -484,9 +438,11 @@ static bool decodeHEVC(const char *filename){
 	c->width  = pVFrame->width;
 	c->height = pVFrame->height;
 	//fps
-//	c->time_base = (AVRational){1,25};
+	//c->time_base = (AVRational)(1, 25);
+	c->time_base.den = 1;
+	c->time_base.num = 25;
 	c->gop_size = 10;
-	c->max_b_frames = 0; //TODO
+	c->max_b_frames = 10; //TODO
 	c->pix_fmt = AV_PIX_FMT_YUV420P;
 	
 	//open
@@ -501,7 +457,19 @@ static bool decodeHEVC(const char *filename){
 		return false;
 	}
 
+	/* alloc image and output buffer */
+	uint8_t *outbuf, *picture_buf;
+	int outbuf_size = 100000, size;
+	outbuf = (uint8_t*) malloc(outbuf_size);
+	size = c->width * c->height;
+	picture_buf = (uint8_t*) malloc((size * 3) / 2); //size of YUV420
 
+	picture->data[0] = picture_buf;
+	picture->data[1] = picture->data[0] + size;
+	picture->data[2] = picture->data[1] + size / 4;
+	picture->linesize[0] = c->width;
+	picture->linesize[1] = c->width / 2;
+	picture->linesize[2] = c->width / 2;
 
 	return true;
 }
