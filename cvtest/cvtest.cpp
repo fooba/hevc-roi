@@ -39,8 +39,8 @@ typedef struct{
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 
 const std::string inputfilename  = "C:\\testshort.mp4";
-const std::string roistr = "C:\\faces.mkv";
-const std::string videostr = "C:\\video.mkv";
+const std::string roistr = "C:\\faces.yuv";
+const std::string videostr = "C:\\video.yuv";
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
@@ -120,32 +120,18 @@ int main(){
 	start = clock();
 	
 	int ret = 0;
-	ffmpegopenVid(inputfilename.c_str());
+	//ffmpegopenVid(inputfilename.c_str());
 
-	//Video Output
-	S = Size(pVCodecCtx->height, pVCodecCtx->width);
-	double fps = pVCodecCtx->framerate.num; //ToDo fps
-	if (!outputVideo.open(videostr, fourcc_output_codec, fps, S, true)){ //out
-		//if (!outputVideo.open("C:/outshort.yuv", CV_FOURCC('X', '2', '6', '4'), fps, S, true)){ //out
-		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('H', 'E', 'V', 'C'), fps, S, true)){ //out
-		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('P', 'I', 'M', '1'), fps, S, true)){ //out //works but mov
-		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('Y', 'V', '1', '2'), fps, S, true)){ //out
-		cout << "Could not create Video writer...." << endl;
-		return -1;
-	}
 
 	int i = 0;
-	while (querryFrame()){
-		cout << "frame " << ++i << endl;
-		//querryFrame();
-		//if (frameFinished)
-			//cv::imshow("test", cvFrameContext);
+	//while (querryFrame()){
+		//cout << "frame " << ++i << endl;
 		ret = startVid();
 #ifdef SHOW_DETECTED_FACES			
-		imshow(window_name, cvFrameContext); 
+		//imshow(window_name, cvFrameContext); 
 		waitKey(1);
 #endif
-	}
+	//}
 
 	if (ret != 0){
 		cout << "Error " << ret << " ... closing now" << endl;
@@ -205,15 +191,15 @@ void startCam(void){
 }
 
 int startVid(void){
-	/*
+	
 	cout << "\t Load input, detect faces and encode Background:\n" << endl;
 
 	VideoCapture capture;
 	Mat frame;
-	*/
+	
 	//-- 1. Load the cascades
 	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return -1; };
-	/*
+	
 	//-- 2. Read the video stream
 	capture.open(inputfilename);
 	int framecounter = 0;
@@ -222,35 +208,47 @@ int startVid(void){
 		cout << "Can't open Video..." << endl;
 		return -1;
 	}
-	*/
-	//Groesse des Input Vids
 
-	if (!outputVideo.isOpened())
-	{
-	cout << "Could not open the output video to write... " << endl;
-	return -1;
+	//Video Output
+	Size S = Size((int)capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+		(int)capture.get(CV_CAP_PROP_FRAME_HEIGHT));
+	double fps = capture.get(CV_CAP_PROP_FPS); //fps
+	if (!outputVideo.open(videostr, fourcc_output_codec, fps, S, true)){ //out
+		//if (!outputVideo.open("C:/outshort.yuv", CV_FOURCC('X', '2', '6', '4'), fps, S, true)){ //out
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('H', 'E', 'V', 'C'), fps, S, true)){ //out
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('P', 'I', 'M', '1'), fps, S, true)){ //out //works but mov
+		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('Y', 'V', '1', '2'), fps, S, true)){ //out
+		cout << "Could not create Video writer...." << endl;
+		return -1;
 	}
 	
+	if (!outputVideo.isOpened())
+	{
+		cout << "Could not open the output video to write... " << endl;
+		return -1;
+	}
 	
 	Mat roi;
-	//while (capture.read(frame)){
-	
-		
-	
+	int i = 0;
+	while (capture.read(frame)){
+		cout << "  frame: " << ++i << endl;
+
+
 		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
 
-		if (!cvFrameContext.empty()){
-			std::vector<Rect> faces = detectFaces(cvFrameContext);
+		if (!frame.empty()){
+			std::vector<Rect> faces = detectFaces(frame);
 			for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
 			{
 #ifdef WITH_FACE_RECTANGLE
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
-				rectangle(cvFrameContext, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
+				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
+				imshow("face det", frame);
 #endif
 
 				//Region of Interest = gesicht
-				Mat roi = cvFrameContext(faces.at(i));
+				Mat roi = frame(faces.at(i));
 				/*
 				//fuer speicherung
 				vector<Mat> dummyFaces;
@@ -261,14 +259,15 @@ int startVid(void){
 				dummy.faces = dummyFaces;
 				facesVideo.push_back(dummy);
 				*/
-				
+
 			}
 
 			cout << "Writing..." << endl;
-			outputVideo << cvFrameContext; //Schreibe frame in output video
+			outputVideo << frame; //Schreibe frame in output video
 
 		}
 		else cout << "ERROR: Null Frame..." << endl;
+	}
 	return 0;
 }
 
