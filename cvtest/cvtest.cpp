@@ -41,11 +41,16 @@ typedef struct{
 const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
 const std::string videostr = "C:\\video.yuv";
+const std::string outvideostr = "C:\\video.mkv";
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
 VideoWriter outputVideo;
 Size S;
+
+//Std Framerate und Groesse, aenderbar auf eingangsvideo oder aehnlichem
+std::string fpsstr = "25";
+std::string sizestr = "1920x10080";
 
 String test;
 cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
@@ -107,7 +112,7 @@ bool querryFrame(void);
 /**
  * @brief encodiert als HEVC mit Command-line Prompt
 */
-int encodeCmd(std::string filename);
+int encodeCmd(std::string filename, std::string outfilename);
 
 
 int main(){
@@ -126,20 +131,20 @@ int main(){
 	int i = 0;
 	//while (querryFrame()){
 		//cout << "frame " << ++i << endl;
-		ret = startVid();
-#ifdef SHOW_DETECTED_FACES			
+		ret = startVid();		
 		//imshow(window_name, cvFrameContext); 
+		cout << "facedet finished" << endl;
 		waitKey(1);
-#endif
 	//}
+
 
 	if (ret != 0){
 		cout << "Error " << ret << " ... closing now" << endl;
 		waitKey(0);
 	}
 	else{
-		encodeCmd(roistr);
-		encodeCmd(videostr);
+		//encodeCmd(roistr);
+		encodeCmd(videostr, outvideostr);
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "elapsed Time: " << elapsed << endl;
@@ -205,7 +210,7 @@ int startVid(void){
 	int framecounter = 0;
 
 	if (!capture.isOpened()){
-		cout << "Can't open Video..." << endl;
+		cout << "Can't open Video... in: " << inputfilename << endl;
 		return -1;
 	}
 
@@ -227,14 +232,22 @@ int startVid(void){
 		cout << "Could not open the output video to write... " << endl;
 		return -1;
 	}
-	
+
+	//Saving information for HEVC encoder
+	std::ostringstream dummy, dummy2;
+	dummy << fps;
+	fpsstr = dummy.str();
+	dummy2 << S.width << "x" << S.height;
+	sizestr = dummy2.str();
+
+
 	Mat roi;
 	int i = 0;
 	while (capture.read(frame)){
 		cout << "  frame: " << ++i << endl;
 
 
-		//if (framecounter >= 50) break; //TODO ONLY READ first 10 FRAMES
+		if (i >= 25) break; //TODO ONLY READ first 10 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -244,7 +257,8 @@ int startVid(void){
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
-				imshow("face det", frame);
+				//imshow("face det", frame);
+				//waitKey(1);
 #endif
 
 				//Region of Interest = gesicht
@@ -387,9 +401,12 @@ bool querryFrame(void){
 }
 
 
-int encodeCmd(std::string filename){
+int encodeCmd(std::string filename, std::string outfilename){
 	int ret = 0;
-	std::string befehl = "ffmpeg - i "+filename+" - c:v libx265 - preset medium - x265 - params crf = 28 - c : a aac - strict experimental - b : a 128k out_"+filename;
+	//std::string befehl = "ffmpeg - i "+filename+" - c:v libx265 - preset medium - x265 - params crf = 28 - c : a aac - strict experimental - b : a 128k "+outfilename;
+	std::string befehl = "ffmpeg -s:v "+sizestr+" -r "+fpsstr+ " -i "+filename+" -c:v libx265 -preset medium -x265-params crf=28 -c:a aac -strict experimental -b:a 128k "+outfilename;
+	cout << endl << "Encodeing msg: " << endl;
+	cout << befehl << endl;
 	ret = system(befehl.c_str());	
 	return ret;
 }
