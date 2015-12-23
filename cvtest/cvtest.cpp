@@ -42,10 +42,13 @@ const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
 const std::string videostr = "C:\\video.yuv";
 const std::string outvideostr = "C:\\video.mkv";
+const std::string faceoutstr = "C:\\faces.mkv";
+
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
 VideoWriter outputVideo;
+VideoWriter faceVideo;
 Size S;
 
 //Std Framerate und Groesse, aenderbar auf eingangsvideo oder aehnlichem
@@ -133,6 +136,7 @@ int main(){
 		//cout << "frame " << ++i << endl;
 		ret = startVid();		
 		//imshow(window_name, cvFrameContext); 
+		cvDestroyAllWindows();
 		cout << "facedet finished" << endl;
 		waitKey(1);
 	//}
@@ -144,7 +148,11 @@ int main(){
 	}
 	else{
 		//encodeCmd(roistr);
+		cout << "HEVC decoding video" << endl;
 		encodeCmd(videostr, outvideostr);
+		cout << "HEVC decoding faces" << endl;
+		encodeCmd(roistr, faceoutstr);
+		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "elapsed Time: " << elapsed << endl;
@@ -226,10 +234,22 @@ int startVid(void){
 		cout << "Could not create Video writer...." << endl;
 		return -1;
 	}
-	
+
 	if (!outputVideo.isOpened())
 	{
 		cout << "Could not open the output video to write... " << endl;
+		return -1;
+	}
+
+	//Video for Faces
+	if (!faceVideo.open(roistr, fourcc_output_codec, fps, S, true)){
+		cout << "Could not create facevideo writer...." << endl;
+		return -1;
+	}
+	
+	if (!faceVideo.isOpened())
+	{
+		cout << "Could not open the output face Stream to write... " << endl;
 		return -1;
 	}
 
@@ -257,12 +277,18 @@ int startVid(void){
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
-				//imshow("face det", frame);
-				//waitKey(1);
+				imshow("face det", frame);
+				waitKey(1);
 #endif
 
 				//Region of Interest = gesicht
-				Mat roi = frame(faces.at(i));
+				roi = frame(faces.at(i));
+				imshow("face", roi);
+				waitKey(1);
+				cout << "writing face no. " << i + 1 << endl;
+				Mat lroi = Mat::zeros(S, roi.type());
+				roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
+				faceVideo << lroi;
 				/*
 				//fuer speicherung
 				vector<Mat> dummyFaces;
@@ -294,7 +320,8 @@ vector<Rect> detectFaces(Mat frame){
 	equalizeHist(frame_gray, frame_gray); //Normalisiere Histogram
 
 	//-- Detect faces
-	face_cascade.detectMultiScale(frame_gray, faces);// , 1.1, 3, 0);// | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+	face_cascade.detectMultiScale(frame, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+	//face_cascade.detectMultiScale(frame_gray, faces);// , 1.1, 3, 0);// | CV_HAAR_SCALE_IMAGE, Size(30, 30));
 	return faces;
 }
 
