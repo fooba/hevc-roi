@@ -38,7 +38,7 @@ typedef struct{
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 
-const std::string inputfilename  = "C:\\test3.mov";
+const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
 const std::string videostr = "C:\\video.yuv";
 const std::string outvideostr = "C:\\video.mkv";
