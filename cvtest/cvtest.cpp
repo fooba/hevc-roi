@@ -49,14 +49,17 @@ typedef struct{
 const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
 const std::string videostr = "C:\\video.yuv";
+const std::string backstr = "C:\\background.yuv";
 const std::string outvideostr = "C:\\video.mkv";
 const std::string faceoutstr = "C:\\faces.mkv";
+const std::string backoutstr = "C:\\background.mkv";
 
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
 static int framecounter=0;
 VideoWriter outputVideo;
 VideoWriter faceVideo;
+VideoWriter backVideo;
 Size S;
 
 //Std Framerate und Groesse, aenderbar auf eingangsvideo oder aehnlichem
@@ -159,16 +162,20 @@ int main(){
 		waitKey(0);
 	}
 	else{
-		cout << "HEVC decoding video complete" << endl;
+		cout << "HEVC decoding video" << endl;
 		encodeCmd(videostr, outvideostr,BITRATE_ONE);
-		cout << "HEVC decoding video background" << endl;
-		encodeCmd(videostr, outvideostr, BITRATE_SURROUND);
+		cout << "HEVC decoding background " << endl;
+		encodeCmd(backstr, backoutstr, BITRATE_SURROUND);
 		cout << "HEVC decoding faces" << endl;
 		encodeCmd(roistr, faceoutstr,BITRATE_FACE);
 		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "elapsed Time: " << elapsed << endl;
+
+	//TODO
+
+
 	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
 	return ret;
@@ -267,6 +274,19 @@ int startVid(void){
 		return -1;
 	}
 
+	//Video for background
+	if (!backVideo.open(backstr, fourcc_output_codec, fps, S, true)){
+		cout << "Could not create background-video writer...." << endl;
+		return -1;
+	}
+
+	if (!faceVideo.isOpened())
+	{
+		cout << "Could not open the output background Stream to write... " << endl;
+		return -1;
+	}
+
+
 	//Saving information for HEVC encoder
 	std::ostringstream dummy, dummy2;
 	dummy << fps;
@@ -330,6 +350,7 @@ int startVid(void){
 
 			cout << "Writing..." << endl;
 			outputVideo << frame; //Schreibe frame in output video
+			backVideo   << frame; //Schreibe frame in background video
 
 		}
 		else cout << "ERROR: Null Frame..." << endl;
