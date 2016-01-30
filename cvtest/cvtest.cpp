@@ -159,15 +159,17 @@ int main(){
 		waitKey(0);
 	}
 	else{
-		//encodeCmd(roistr);
-		cout << "HEVC decoding video" << endl;
+		cout << "HEVC decoding video complete" << endl;
 		encodeCmd(videostr, outvideostr,BITRATE_ONE);
+		cout << "HEVC decoding video background" << endl;
+		encodeCmd(videostr, outvideostr, BITRATE_SURROUND);
 		cout << "HEVC decoding faces" << endl;
 		encodeCmd(roistr, faceoutstr,BITRATE_FACE);
 		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "elapsed Time: " << elapsed << endl;
+	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
 	return ret;
 }
@@ -279,7 +281,7 @@ int startVid(void){
 		cout << "  frame: " << ++i << endl;
 
 		//TODO 
-		//if (i >= 20) break; //TODO ONLY READ first 10 FRAMES
+		if (i >= 25) break; //TODO ONLY READ first 10 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -484,7 +486,7 @@ bool querryFrame(void){
 
 int encodeCmd(std::string filename, std::string outfilename, std::string bitrate){
 	int ret = 0;
-	std::string befehl = "ffmpeg -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 " + outfilename;
+	std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 -loglevel quiet " + outfilename;
 	cout << endl << "Encodeing msg: " << endl;
 	cout << befehl << endl;
 	ret = system(befehl.c_str());	
