@@ -35,8 +35,10 @@ typedef struct{
 	std::vector<Mat>  faces;
 }facesfromframe;
 
+//#define WITH_EYES_DETECTION //should be look after eyes in detected faces? (slower but better)
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+#define GROP_FACE_SIZE 0.1
 
 const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
@@ -56,8 +58,11 @@ std::string fpsstr = "25";
 std::string sizestr = "1920x10080";
 
 String test;
-cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
+//cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
+cv::String face_cascade_name = "haarcascade_frontalface_alt.xml";
+cv::String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
 CascadeClassifier face_cascade;
+CascadeClassifier eyes_cascade;
 string window_name = "Face detection & ROI encoding using HEVC";
 Mat cvFrameContext;
 struct SwsContext *pVImgConvertCtx;
@@ -73,6 +78,7 @@ AVFrame *pVFrameBGR;
 uint8_t *bufferBGR;
 AVPacket pVPacket;
 Mat inFrames;
+VideoCapture capture;
 
 //RNG rng(12345);
 char key;
@@ -206,12 +212,12 @@ void startCam(void){
 int startVid(void){
 	
 	cout << "\t Load input, detect faces and encode Background:\n" << endl;
-
-	VideoCapture capture;
 	Mat frame;
 	
 	//-- 1. Load the cascades
-	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return -1; };
+	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return -1; }; //face
+	if (!eyes_cascade.load(eyes_cascade_name)){ cout << "--(!)Error loading: " << eyes_cascade_name << "\n" << endl; return -1; }; //eyes
+	cout << "loading cascades.. Ok" << endl;
 	
 	//-- 2. Read the video stream
 	capture.open(inputfilename);
@@ -273,6 +279,18 @@ int startVid(void){
 			std::vector<Rect> faces = detectFaces(frame);
 			for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
 			{
+				//Remove too small faces
+				if (faces.at(i).width <= ((int)(GROP_FACE_SIZE*(capture.get(CV_CAP_PROP_FRAME_WIDTH))))){
+					cout << "face witdth: " << faces.at(i).width << " frame_size: " << GROP_FACE_SIZE* capture.get(CV_CAP_PROP_FRAME_WIDTH) << endl;
+					cout << "face smaller than " << GROP_FACE_SIZE << "x of video -> delete" << endl;
+					cout << "faces before: " << faces.size() << endl;
+					faces.erase(faces.begin() + i);
+					cout << "faces after: " << faces.size() << endl;
+					//cin.ignore();
+					continue;
+				}
+
+
 #ifdef WITH_FACE_RECTANGLE
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
@@ -313,15 +331,45 @@ int startVid(void){
 
 
 vector<Rect> detectFaces(Mat frame){
+	// Idea from:
+	// http://docs.opencv.org/2.4/doc/tutorials/objdetect/cascade_classifier/cascade_classifier.html
+
+	cout << "detect faces..." << endl;
+
 	std::vector<Rect> faces;
 	Mat frame_gray;
+	bool del = false;
 
 	cvtColor(frame, frame_gray, CV_BGR2GRAY);
 	equalizeHist(frame_gray, frame_gray); //Normalisiere Histogram
 
 	//-- Detect faces
-	face_cascade.detectMultiScale(frame, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-	//face_cascade.detectMultiScale(frame_gray, faces);// , 1.1, 3, 0);// | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+
+
+	//Make better detection
+	for (size_t i = 0; i < faces.size(); i++){
+
+
+#ifdef WITH_EYES_DETECTION
+
+		//Look if we detect eyes in face to make a better Facedetection
+		Mat faceROI = frame_gray(faces[i]);
+		std::vector<Rect> eyes;
+
+		//-- In each face, detect eyes
+		eyes_cascade.detectMultiScale(faceROI, eyes, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+
+		if (eyes.size() == 0 && !del){ //No eyes detected -> remove face from vector
+			faces.erase(faces.begin() + i);
+			cout << "No eye detected -> deleted Face No. " << i << endl;
+			del = true;
+		}
+#endif
+	}
+
+
+	cout << "detecting faces finished..." << endl;
 	return faces;
 }
 
