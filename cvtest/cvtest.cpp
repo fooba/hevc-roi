@@ -35,10 +35,16 @@ typedef struct{
 	std::vector<Mat>  faces;
 }facesfromframe;
 
-//#define WITH_EYES_DETECTION //should be look after eyes in detected faces? (slower but better)
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
-#define GROP_FACE_SIZE 0.1
+#define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
+
+/**
+  * Definitions for Bitrates
+*/
+#define BITRATE_ONE       "10k"
+#define BITRATE_FACE	  "15k"
+#define BITRATE_SURROUND  "5k"
 
 const std::string inputfilename  = "C:\\testshort.mp4";
 const std::string roistr = "C:\\faces.yuv";
@@ -121,7 +127,7 @@ bool querryFrame(void);
 /**
  * @brief encodiert als HEVC mit Command-line Prompt
 */
-int encodeCmd(std::string filename, std::string outfilename);
+int encodeCmd(std::string filename, std::string outfilename, std::string bitrate);
 
 
 int main(){
@@ -155,9 +161,9 @@ int main(){
 	else{
 		//encodeCmd(roistr);
 		cout << "HEVC decoding video" << endl;
-		encodeCmd(videostr, outvideostr);
+		encodeCmd(videostr, outvideostr,BITRATE_ONE);
 		cout << "HEVC decoding faces" << endl;
-		encodeCmd(roistr, faceoutstr);
+		encodeCmd(roistr, faceoutstr,BITRATE_FACE);
 		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
@@ -272,8 +278,8 @@ int startVid(void){
 	while (capture.read(frame)){
 		cout << "  frame: " << ++i << endl;
 
-
-		//if (i >= 25) break; //TODO ONLY READ first 10 FRAMES
+		//TODO 
+		//if (i >= 20) break; //TODO ONLY READ first 10 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -476,10 +482,9 @@ bool querryFrame(void){
 }
 
 
-int encodeCmd(std::string filename, std::string outfilename){
+int encodeCmd(std::string filename, std::string outfilename, std::string bitrate){
 	int ret = 0;
-	//std::string befehl = "ffmpeg - i "+filename+" - c:v libx265 - preset medium - x265 - params crf = 28 - c : a aac - strict experimental - b : a 128k "+outfilename;
-	std::string befehl = "ffmpeg -s:v "+sizestr+" -r "+fpsstr+ " -i "+filename+" -c:v libx265 -preset medium -x265-params crf=28 -c:a aac -strict experimental -b:a 128k "+outfilename;
+	std::string befehl = "ffmpeg -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 " + outfilename;
 	cout << endl << "Encodeing msg: " << endl;
 	cout << befehl << endl;
 	ret = system(befehl.c_str());	
