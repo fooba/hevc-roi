@@ -282,16 +282,19 @@ int main(){
 		cout << "Could not create Video writer...." << yuv_together << endl;
 		return -1;
 	}
-	do{
+	bool ready_one = false, ready_back = false, ready_face = false;
+	while(!(ready_one && ready_back && ready_face)){
 		cout << "YUV conv no. " << ++aktFrame << endl;
 
 		//One
 		ret_one = YUV_read(&cap_one);
 		if (ret_one == YUV_EOF){
 			cout << "YUV EOF" << endl;
+			ready_one = true;
 		}
 		else if (ret_one == YUV_IO_ERROR){
 			cout << "IO-Error yuv2cv reading " << endl;
+			break;
 		}
 		cvCvtColor(cap_one.ycrcb, &bgr_one, CV_YCrCb2BGR);
 		yOne = cv::Mat(&bgr_one);
@@ -300,9 +303,11 @@ int main(){
 		ret_back = YUV_read(&cap_back);
 		if (ret_back == YUV_EOF){
 			cout << "YUV EOF" << endl;
+			ready_back = true;
 		}
 		else if (ret_back == YUV_IO_ERROR){
 			cout << "IO-Error yuv2cv reading " << endl;
+			break;
 		}
 		cvCvtColor(cap_back.ycrcb, &bgr_back, CV_YCrCb2BGR);
 		yBack = cv::Mat(&bgr_back);
@@ -311,7 +316,7 @@ int main(){
 		ret_face = YUV_read(&cap_face);
 		if (ret_face == YUV_EOF){
 			cout << "YUV EOF" << endl;
-			break;
+			ready_face = true;
 		}
 		else if (ret_face == YUV_IO_ERROR){
 			cout << "IO-Error yuv2cv reading " << endl;
@@ -321,23 +326,25 @@ int main(){
 		yFace = cv::Mat(&bgr_face);
 
 		//Faces wurde in Frame entdeckt
-		for (int d = 0; d < facesinFrame.size(); d++){
-			if (aktFrame - 1 == facesinFrame.at(d).frameid){
-				for (int j = 0; j < facesinFrame.at(d).rect.size(); j++){
-					cout << "frameID: " << facesinFrame.at(d).frameid << endl;
-					cout << "face: " << j << endl;
-					int width = facesinFrame.at(d).rect.at(j).width;
-					int height = facesinFrame.at(d).rect.at(j).height;
-					int x = facesinFrame.at(d).rect.at(j).x;
-					int y = facesinFrame.at(d).rect.at(j).y;
-					cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
-					cv::Rect pos(cv::Point(x, y), cv::Size(width, height)); //rect where Face should be
-					cv::Mat destination(yBack, pos);
-					imshow("destination", destination);
-					cvWaitKey(2);
-					croppedFace.copyTo(destination);
-					imshow("destination2", destination);
-					cvWaitKey(2);
+		if (ret_face != YUV_EOF){
+			for (int d = 0; d < facesinFrame.size(); d++){
+				if (aktFrame - 1 == facesinFrame.at(d).frameid){
+					for (int j = 0; j < facesinFrame.at(d).rect.size(); j++){
+						cout << "frameID: " << facesinFrame.at(d).frameid << endl;
+						cout << "face: " << j << endl;
+						int width = facesinFrame.at(d).rect.at(j).width;
+						int height = facesinFrame.at(d).rect.at(j).height;
+						int x = facesinFrame.at(d).rect.at(j).x;
+						int y = facesinFrame.at(d).rect.at(j).y;
+						cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
+						cv::Rect pos(cv::Point(x, y), cv::Size(width, height)); //rect where Face should be
+						cv::Mat destination(yBack, pos);
+						imshow("destination", destination);
+						cvWaitKey(2);
+						croppedFace.copyTo(destination);
+						imshow("destination2", destination);
+						cvWaitKey(2);
+					}
 				}
 			}
 		}
@@ -351,7 +358,7 @@ int main(){
 		cvWaitKey(1);
 		outtogether << yBack;
 		cvWaitKey(1);
-	} while (!(yOne.empty() || yBack.empty()));
+	}
 
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "complete elapsed Time: " << elapsed << endl;
