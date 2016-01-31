@@ -212,20 +212,50 @@ int main(){
 	struct YUV_Capture cap_one;
 	enum YUV_ReturnValue ret_one;
 	IplImage bgr_one;
-	yuv2MatInit(yuv_encoded_one, f_one, &ret_one, &bgr_one, &cap_one);
+	//Init:
+	f_one = fopen(yuv_encoded_one.c_str(), "rb");
+	if (!f_one)
+		cout << "Couldn't open " << yuv_encoded_one << "to convert to CV" << endl;
+	ret_one = YUV_init(f_one, S.width, S.height, &cap_one);
+	if (ret != YUV_OK)
+		cout << "YUV_Init failed by " << yuv_encoded_one << endl;
+	bgr_one = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
+	if (!&bgr_one)
+		cout << "bgr_create image failed by" << yuv_encoded_one << endl;
+
 
 	//Background Video
 	FILE *f_back = NULL;
 	struct YUV_Capture cap_back;
 	enum YUV_ReturnValue ret_back;
 	IplImage bgr_back;
-	yuv2MatInit(yuv_encoded_back, f_back, &ret_back, &bgr_back, &cap_back);
+	//Init:
+	f_back = fopen(yuv_encoded_back.c_str(), "rb");
+	if (!f_back)
+		cout << "Couldn't open " << yuv_encoded_back << "to convert to CV" << endl;
+	ret_back = YUV_init(f_back, S.width, S.height, &cap_back);
+	if (ret != YUV_OK)
+		cout << "YUV_Init failed by " << yuv_encoded_back << endl;
+	bgr_back = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
+	if (!&bgr_back)
+		cout << "bgr_create image failed by" << yuv_encoded_back << endl;
 
 	//Face Video
 	FILE *f_face = NULL;
 	struct YUV_Capture cap_face;
 	enum YUV_ReturnValue ret_face;
 	IplImage bgr_face;
+	//Init:
+	f_face = fopen(yuv_encoded_face.c_str(), "rb");
+	if (!f_face)
+		cout << "Couldn't open " << yuv_encoded_face << "to convert to CV" << endl;
+	ret_face = YUV_init(f_face, S.width, S.height, &cap_face);
+	if (ret != YUV_OK)
+		cout << "YUV_Init failed by " << yuv_encoded_face << endl;
+	bgr_face = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
+	if (!&bgr_face)
+		cout << "bgr_create image failed by" << yuv_encoded_face << endl;
+
 	yuv2MatInit(yuv_encoded_face, f_face, &ret_face, &bgr_face, &cap_face);
 
 	//Mat Files of the videos
@@ -235,13 +265,53 @@ int main(){
 	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige
 	do{
 		cout << "YUV conv no. " << ++aktFrame << endl;
-		yOne  = yuv2Mat(&ret_one,  &bgr_one,  &cap_one );
-		yBack = yuv2Mat(&ret_back, &bgr_back, &cap_back);
-		yFace = yuv2Mat(&ret_face, &bgr_face, &cap_face);
+		//yOne  = yuv2Mat(&ret_one,  &bgr_one,  &cap_one );
+		//yBack = yuv2Mat(&ret_back, &bgr_back, &cap_back);
+		//yFace = yuv2Mat(&ret_face, &bgr_face, &cap_face);
 
+
+		//One
+		ret_one = YUV_read(&cap_one);
+		if (ret_one == YUV_EOF){
+			cout << "YUV EOF" << endl;
+		}
+		else if (ret_one == YUV_IO_ERROR){
+			cout << "IO-Error yuv2cv reading " << endl;
+		}
+		cvCvtColor(cap_one.ycrcb, &bgr_one, CV_YCrCb2BGR);
+		yOne = cv::Mat(&bgr_one);
+
+		//back
+		ret_back = YUV_read(&cap_back);
+		if (ret_back == YUV_EOF){
+			cout << "YUV EOF" << endl;
+		}
+		else if (ret_back == YUV_IO_ERROR){
+			cout << "IO-Error yuv2cv reading " << endl;
+		}
+		cvCvtColor(cap_back.ycrcb, &bgr_back, CV_YCrCb2BGR);
+		yBack = cv::Mat(&bgr_back);
+
+		//face
+		ret_face = YUV_read(&cap_face);
+		if (ret_face == YUV_EOF){
+			cout << "YUV EOF" << endl;
+			break;
+		}
+		else if (ret_face == YUV_IO_ERROR){
+			cout << "IO-Error yuv2cv reading " << endl;
+			break;
+		}
+		cvCvtColor(cap_face.ycrcb, &bgr_face, CV_YCrCb2BGR);
+		yFace = cv::Mat(&bgr_face);
+
+		//show
 		imshow("One", yOne);
+		cvWaitKey(1);
 		imshow("back", yBack);
+		cvWaitKey(1);
 		imshow("face", yFace);
+		cvWaitKey(1);
 	} while (!(yOne.empty() || yBack.empty()));
 
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
@@ -372,7 +442,7 @@ int startVid(void){
 		cout << "  frame: " << ++i << endl;
 
 		//TODO 
-		if (i >= 2) break; //TODO ONLY READ first 2 FRAMES
+		if (i >= 5) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -681,15 +751,18 @@ void yuv2MatInit(std::string filename, FILE* fin, YUV_ReturnValue* ret, IplImage
 		return;
 	}
 	*ret = YUV_init(fin, S.width, S.height, cap);
-	assert(*ret == YUV_OK);
+	if (*ret != YUV_OK)
+		cout << "YUV_INIT failed" << endl;
 
 	bgr = cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3);
-	assert(bgr);
+	if (!bgr)
+		cout << "bgr_Create Image failed" << endl;
 }
 
 cv::Mat yuv2Mat(YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap){
 	*ret = YUV_read(cap);
 	if (*ret == YUV_EOF){
+		cout << "YUV EOF" << endl;
 		return cv::Mat();
 	}
 	else if (*ret == YUV_IO_ERROR){
@@ -697,7 +770,7 @@ cv::Mat yuv2Mat(YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap){
 		return cv::Mat();
 	}
 	cout << "yuv2Mat vor cvtColor" << endl;
-	::cvCvtColor(cap->ycrcb, &bgr, CV_YCrCb2BGR);
+	::cvCvtColor(cap->ycrcb, bgr, CV_YCrCb2BGR);
 	cout << "yuv2Mat nach cvtColor" << endl;
 	return cv::Mat(bgr);
 }
