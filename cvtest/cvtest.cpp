@@ -52,13 +52,18 @@ typedef struct{
 #define BITRATE_FACE	  "15k"
 #define BITRATE_SURROUND  "5k"
 
-const std::string inputfilename  = "C:\\testshort.mp4";
-const std::string roistr = "C:\\faces.yuv";
-const std::string videostr = "C:\\video.yuv";
-const std::string backstr = "C:\\background.yuv";
-const std::string outvideostr = "C:\\video.mkv";
-const std::string faceoutstr = "C:\\faces.mkv";
-const std::string backoutstr = "C:\\background.mkv";
+const std::string inputfilename    = "C:\\testshort.mp4";
+const std::string roistr		   = "C:\\faces.yuv";
+const std::string videostr		   = "C:\\video.yuv";
+const std::string backstr		   = "C:\\background.yuv";
+const std::string outvideostr	   = "C:\\video.mkv";
+const std::string faceoutstr	   = "C:\\faces.mkv";
+const std::string backoutstr	   = "C:\\background.mkv";
+
+const std::string yuv_encoded_one  = "C:\\yuv_one.yuv";
+const std::string yuv_encoded_back = "C:\\yuv_back.yuv";
+const std::string yuv_encoded_face = "C:\\yuv_face.yuv";
+
 
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
@@ -94,11 +99,6 @@ uint8_t *bufferBGR;
 AVPacket pVPacket;
 Mat inFrames;
 VideoCapture capture;
-
-FILE *fin = NULL;
-struct YUV_Capture cap;
-enum YUV_ReturnValue ret;
-IplImage *bgr;
 
 //RNG rng(12345);
 char key;
@@ -144,14 +144,19 @@ bool querryFrame(void);
 int encodeCmd(std::string filename, std::string outfilename, std::string bitrate);
 
 /**
-  * @brief inits the Conversation from the YUV-File given by filenmae to OpenCV MAt
+  * @brief decode inFile in outFile
+*/
+int decodeCmd(std::string inFilename, std::string outFilename);
+
+/**
+  * @brief inits the Conversation from the YUV-File given by filenmae to OpenCV Mat
   */
-void yuv2MatInit(std::string filename);
+void yuv2MatInit(std::string filename, FILE* fin, YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap);
 
 /**
   * @brief Converts a YUV capture to OpenCV Mat bgr coded
   */
-cv::Mat yuv2Mat();
+cv::Mat yuv2Mat(YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap);
 
 int main(){
 	//Zeitmessung
@@ -191,20 +196,56 @@ int main(){
 		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-	cout << "elapsed Time: " << elapsed << endl;
+	cout << "elapsed encoding Time: " << elapsed << endl;
 
-	//TODO
-	yuv2MatInit(backstr);
-	Mat test;
-	int durchlauf = 0;
+	///ENCODING FINISHED:
+	///Compare different video files
+
+	//Convert encoded Videos from HEVC to YUV
+	decodeCmd(outvideostr, yuv_encoded_one); //Einzel Video
+	decodeCmd(faceoutstr, yuv_encoded_face); //Faces Video
+	decodeCmd(backoutstr, yuv_encoded_back); //Background Video
+
+	//Init the new YUV-Videos to OpenCv
+	//One Video
+	FILE *f_one = NULL;
+	struct YUV_Capture cap_one;
+	enum YUV_ReturnValue ret_one;
+	IplImage bgr_one;
+	yuv2MatInit(yuv_encoded_one, f_one, &ret_one, &bgr_one, &cap_one);
+
+	//Background Video
+	FILE *f_back = NULL;
+	struct YUV_Capture cap_back;
+	enum YUV_ReturnValue ret_back;
+	IplImage bgr_back;
+	yuv2MatInit(yuv_encoded_back, f_back, &ret_back, &bgr_back, &cap_back);
+
+	//Face Video
+	FILE *f_face = NULL;
+	struct YUV_Capture cap_face;
+	enum YUV_ReturnValue ret_face;
+	IplImage bgr_face;
+	yuv2MatInit(yuv_encoded_face, f_face, &ret_face, &bgr_face, &cap_face);
+
+	//Mat Files of the videos
+	cv::Mat yOne, yBack, yFace;
+	int aktFrame = 0;
+
+	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige
 	do{
-		cout << "YUV conv no. " << ++durchlauf << endl;
-		test = yuv2Mat();
-		if (!test.empty()){
-			imshow("yuv test", test);
-			cvWaitKey(1);
-		}
-	} while (!test.empty());
+		cout << "YUV conv no. " << ++aktFrame << endl;
+		yOne  = yuv2Mat(&ret_one,  &bgr_one,  &cap_one );
+		yBack = yuv2Mat(&ret_back, &bgr_back, &cap_back);
+		yFace = yuv2Mat(&ret_face, &bgr_face, &cap_face);
+
+		imshow("One", yOne);
+		imshow("back", yBack);
+		imshow("face", yFace);
+	} while (!(yOne.empty() || yBack.empty()));
+
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	cout << "complete elapsed Time: " << elapsed << endl;
 
 	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
@@ -331,7 +372,7 @@ int startVid(void){
 		cout << "  frame: " << ++i << endl;
 
 		//TODO 
-		if (i >= 25) break; //TODO ONLY READ first 10 FRAMES
+		if (i >= 2) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -544,6 +585,15 @@ int encodeCmd(std::string filename, std::string outfilename, std::string bitrate
 	return ret;
 }
 
+int decodeCmd(std::string inFilename, std::string outFilename){
+	int ret = 0;
+	std::string befehl = "ffmpeg -y -i " + inFilename + " -loglevel quiet " + outFilename;
+	cout << endl << "Decoding msg: " << endl;
+	cout << befehl << endl;
+	ret = system(befehl.c_str());
+	return ret;
+}
+
 /*
 void x265Encoding(){
 	x265_param *param = x265_param_alloc();
@@ -624,28 +674,30 @@ static bool decodeHEVC(const char *filename){
 }
 
 
-void yuv2MatInit(std::string filename){
+void yuv2MatInit(std::string filename, FILE* fin, YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap){
 	fin = fopen(filename.c_str(),"rb");
 	if (!fin){
 		cout << "Couldn't open " << filename << "to convert to CV" << endl;
 		return;
 	}
-	ret = YUV_init(fin, S.width, S.height, &cap);
-	assert(ret == YUV_OK);
+	*ret = YUV_init(fin, S.width, S.height, cap);
+	assert(*ret == YUV_OK);
 
 	bgr = cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3);
 	assert(bgr);
 }
 
-cv::Mat yuv2Mat(){
-	ret = YUV_read(&cap);
-	if (ret == YUV_EOF){
+cv::Mat yuv2Mat(YUV_ReturnValue* ret, IplImage* bgr, YUV_Capture* cap){
+	*ret = YUV_read(cap);
+	if (*ret == YUV_EOF){
 		return cv::Mat();
 	}
-	else if (ret == YUV_IO_ERROR){
+	else if (*ret == YUV_IO_ERROR){
 		cout << "IO-Error yuv2cv reading " << endl;
 		return cv::Mat();
 	}
-	cvCvtColor(cap.ycrcb, bgr, CV_YCrCb2BGR);
+	cout << "yuv2Mat vor cvtColor" << endl;
+	::cvCvtColor(cap->ycrcb, &bgr, CV_YCrCb2BGR);
+	cout << "yuv2Mat nach cvtColor" << endl;
 	return cv::Mat(bgr);
 }
