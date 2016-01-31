@@ -41,6 +41,11 @@ typedef struct{
 	std::vector<Mat>  faces;
 }facesfromframe;
 
+typedef struct{
+	int frameid;
+	std::vector<Rect> rect;
+}faceInFrame;
+
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
 #define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
@@ -99,6 +104,7 @@ uint8_t *bufferBGR;
 AVPacket pVPacket;
 Mat inFrames;
 VideoCapture capture;
+std::vector<faceInFrame> facesinFrame;
 
 //RNG rng(12345);
 char key;
@@ -312,8 +318,26 @@ int main(){
 		cvCvtColor(cap_face.ycrcb, &bgr_face, CV_YCrCb2BGR);
 		yFace = cv::Mat(&bgr_face);
 
+		//Faces wurde in Frame entdeckt
+		if (aktFrame - 1 == facesinFrame.at(aktFrame - 1).frameid){
+			for (int j = 0; j < facesinFrame.at(aktFrame - 1).rect.size(); j++){
+				int width  = facesinFrame.at(aktFrame - 1).rect.at(j).width;
+				int height = facesinFrame.at(aktFrame - 1).rect.at(j).height;
+				Mat croppedFace = yFace(Rect(0, 0, width, height));
+				imshow("cropped Face", croppedFace);
+				cvWaitKey(1);
+			}
+		}
+
 		//show
-		cvShowManyImages("converted", 2, cvClone(&(IplImage)yOne), cvClone(&(IplImage)yBack));
+		namedWindow("one", WINDOW_NORMAL);
+		namedWindow("together", WINDOW_NORMAL);
+		imshow("one", yOne);
+		cvWaitKey(1);
+		imshow("together", yBack);
+		cvWaitKey(1);
+		//TODO
+		//cvShowManyImages("converted", 2, cvClone(&(IplImage)yOne), cvClone(&(IplImage)yBack));
 		cvWaitKey(1);
 	} while (!(yOne.empty() || yBack.empty()));
 
@@ -496,6 +520,11 @@ int startVid(void){
 			outputVideo << frame; //Schreibe frame in output video
 			backVideo   << frame; //Schreibe frame in background video
 
+			//Speichere die Gesichter
+			faceInFrame dummy;
+			dummy.frameid = framecounter;
+			dummy.rect = faces;
+			facesinFrame.push_back(dummy);
 		}
 		else cout << "ERROR: Null Frame..." << endl;
 	}
