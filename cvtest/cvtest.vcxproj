@@ -89,6 +89,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="yuv.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cvtest.cpp" />
@@ -96,6 +97,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="yuv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="cvtest.rc" />

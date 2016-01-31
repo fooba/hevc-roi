@@ -1,12 +1,18 @@
 #include "stdafx.h"
-#include "stdio.h"
+#include <stdio.h>
 #include <iostream>
 #include <ctime>
+#include <stdlib.h>
+#include <assert.h>
 
 //OpenCV
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <opencv\cv.h> //older cv things
+
+//Converts YUV -> CV
+#include "yuv.h"
 
 //FFMPEG (C-compiled)
 extern "C" {
@@ -132,6 +138,11 @@ bool querryFrame(void);
 */
 int encodeCmd(std::string filename, std::string outfilename, std::string bitrate);
 
+/**
+  * @brief converts an yuv file to openCV File
+  */
+void yuv2Mat(std::string filename);
+
 
 int main(){
 	//Zeitmessung
@@ -174,7 +185,7 @@ int main(){
 	cout << "elapsed Time: " << elapsed << endl;
 
 	//TODO
-
+	yuv2Mat(backstr);
 
 	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
@@ -244,7 +255,7 @@ int startVid(void){
 	}
 
 	//Video Output
-	Size S = Size((int)capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+	/*Size*/ S = Size((int)capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
 		(int)capture.get(CV_CAP_PROP_FRAME_HEIGHT));
 	double fps = capture.get(CV_CAP_PROP_FPS); //fps
 	if (!outputVideo.open(videostr, fourcc_output_codec, fps, S, true)){ //out
@@ -591,4 +602,43 @@ static bool decodeHEVC(const char *filename){
 	picture->linesize[2] = c->width / 2;
 
 	return true;
+}
+
+
+void yuv2Mat(std::string filename){
+	int width;
+	int height;
+	FILE *fin = NULL;
+	struct YUV_Capture cap;
+	enum YUV_ReturnValue ret;
+	IplImage *bgr;
+
+	width  = S.width;
+	height = S.height;
+	fin = fopen(filename.c_str(),"rb");
+	if (!fin){
+		cout << "Couldn't open " << filename << "to convert to CV" << endl;
+		return;
+	}
+	ret = YUV_init(fin, width, height, &cap);
+	assert(ret == YUV_OK);
+
+	bgr = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
+	assert(bgr);
+
+	while (1){
+		ret = YUV_read(&cap);
+		if (ret == YUV_EOF){
+			cvWaitKey(0);
+			break;
+		}
+		else if (ret == YUV_IO_ERROR){
+			cout << "IO-Error yuv2cv opening "<< filename << endl;
+			break;
+		}
+		cvCvtColor(cap.ycrcb, bgr, CV_YCrCb2BGR);
+		cvShowImage("yuv2cv", bgr);
+		cvWaitKey(35);
+	}
+
 }
