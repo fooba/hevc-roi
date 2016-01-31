@@ -104,6 +104,11 @@ VideoCapture capture;
 char key;
 
 /**
+  * Zeigt mehrere Imgs in einem Fenster an
+*/
+extern void cvShowManyImages(char* title, int nArgs, ...);
+
+/**
 * @brief start an openCV session to the webcam and detect faces in stream
 *        quit with escape-btn
 */
@@ -265,6 +270,8 @@ int main(){
 	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige
 	do{
 		cout << "YUV conv no. " << ++aktFrame << endl;
+
+		//Reference error so make it for every image in code
 		//yOne  = yuv2Mat(&ret_one,  &bgr_one,  &cap_one );
 		//yBack = yuv2Mat(&ret_back, &bgr_back, &cap_back);
 		//yFace = yuv2Mat(&ret_face, &bgr_face, &cap_face);
@@ -306,11 +313,7 @@ int main(){
 		yFace = cv::Mat(&bgr_face);
 
 		//show
-		imshow("One", yOne);
-		cvWaitKey(1);
-		imshow("back", yBack);
-		cvWaitKey(1);
-		imshow("face", yFace);
+		cvShowManyImages("converted", 2, cvClone(&(IplImage)yOne), cvClone(&(IplImage)yBack));
 		cvWaitKey(1);
 	} while (!(yOne.empty() || yBack.empty()));
 

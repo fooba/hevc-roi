@@ -92,6 +92,7 @@
     <ClInclude Include="yuv.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cvShowManyImages.cpp" />
     <ClCompile Include="cvtest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
