@@ -54,7 +54,7 @@ typedef struct{
   * Definitions for Bitrates
 */
 #define BITRATE_ONE       "10k"
-#define BITRATE_FACE	  "15k"
+#define BITRATE_FACE	  "700k"
 #define BITRATE_SURROUND  "5k"
 
 const std::string inputfilename    = "C:\\testshort.mp4";
@@ -69,6 +69,8 @@ const std::string yuv_encoded_one  = "C:\\yuv_one.yuv";
 const std::string yuv_encoded_back = "C:\\yuv_back.yuv";
 const std::string yuv_encoded_face = "C:\\yuv_face.yuv";
 
+const std::string yuv_together	   = "C:\\together.yuv";
+
 
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
 std::vector<facesfromframe> facesVideo;
@@ -76,7 +78,9 @@ static int framecounter=0;
 VideoWriter outputVideo;
 VideoWriter faceVideo;
 VideoWriter backVideo;
+VideoWriter outtogether;
 Size S;
+double fps;
 
 //Std Framerate und Groesse, aenderbar auf eingangsvideo oder aehnlichem
 std::string fpsstr = "25";
@@ -273,15 +277,13 @@ int main(){
 	cv::Mat yOne, yBack, yFace;
 	int aktFrame = 0;
 
-	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige
+	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige & Speichern
+	if (!outtogether.open(yuv_together, fourcc_output_codec, fps, S, true)){
+		cout << "Could not create Video writer...." << yuv_together << endl;
+		return -1;
+	}
 	do{
 		cout << "YUV conv no. " << ++aktFrame << endl;
-
-		//Reference error so make it for every image in code
-		//yOne  = yuv2Mat(&ret_one,  &bgr_one,  &cap_one );
-		//yBack = yuv2Mat(&ret_back, &bgr_back, &cap_back);
-		//yFace = yuv2Mat(&ret_face, &bgr_face, &cap_face);
-
 
 		//One
 		ret_one = YUV_read(&cap_one);
@@ -319,25 +321,35 @@ int main(){
 		yFace = cv::Mat(&bgr_face);
 
 		//Faces wurde in Frame entdeckt
-		if (aktFrame - 1 == facesinFrame.at(aktFrame - 1).frameid){
-			for (int j = 0; j < facesinFrame.at(aktFrame - 1).rect.size(); j++){
-				int width  = facesinFrame.at(aktFrame - 1).rect.at(j).width;
-				int height = facesinFrame.at(aktFrame - 1).rect.at(j).height;
-				Mat croppedFace = yFace(Rect(0, 0, width, height));
-				imshow("cropped Face", croppedFace);
-				cvWaitKey(1);
+		for (int d = 0; d < facesinFrame.size(); d++){
+			if (aktFrame - 1 == facesinFrame.at(d).frameid){
+				for (int j = 0; j < facesinFrame.at(d).rect.size(); j++){
+					cout << "frameID: " << facesinFrame.at(d).frameid << endl;
+					cout << "face: " << j << endl;
+					int width = facesinFrame.at(d).rect.at(j).width;
+					int height = facesinFrame.at(d).rect.at(j).height;
+					int x = facesinFrame.at(d).rect.at(j).x;
+					int y = facesinFrame.at(d).rect.at(j).y;
+					cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
+					cv::Rect pos(cv::Point(x, y), cv::Size(width, height)); //rect where Face should be
+					cv::Mat destination(yBack, pos);
+					imshow("destination", destination);
+					cvWaitKey(2);
+					croppedFace.copyTo(destination);
+					imshow("destination2", destination);
+					cvWaitKey(2);
+				}
 			}
 		}
 
 		//show
-		namedWindow("one", WINDOW_NORMAL);
-		namedWindow("together", WINDOW_NORMAL);
+		//namedWindow("one", WINDOW_NORMAL);
+		//namedWindow("together", WINDOW_NORMAL);
 		imshow("one", yOne);
 		cvWaitKey(1);
 		imshow("together", yBack);
 		cvWaitKey(1);
-		//TODO
-		//cvShowManyImages("converted", 2, cvClone(&(IplImage)yOne), cvClone(&(IplImage)yBack));
+		outtogether << yBack;
 		cvWaitKey(1);
 	} while (!(yOne.empty() || yBack.empty()));
 
@@ -414,7 +426,7 @@ int startVid(void){
 	//Video Output
 	/*Size*/ S = Size((int)capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
 		(int)capture.get(CV_CAP_PROP_FRAME_HEIGHT));
-	double fps = capture.get(CV_CAP_PROP_FPS); //fps
+	fps = capture.get(CV_CAP_PROP_FPS); //fps
 	if (!outputVideo.open(videostr, fourcc_output_codec, fps, S, true)){ //out
 		//if (!outputVideo.open("C:/outshort.yuv", CV_FOURCC('X', '2', '6', '4'), fps, S, true)){ //out
 		//if (! outputVideo.open("C:/outshort.yuv", CV_FOURCC('H', 'E', 'V', 'C'), fps, S, true)){ //out
@@ -469,7 +481,7 @@ int startVid(void){
 		cout << "  frame: " << ++i << endl;
 
 		//TODO 
-		if (i >= 5) break; //TODO ONLY READ first 2 FRAMES
+		//if (i >= 25) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -503,30 +515,21 @@ int startVid(void){
 				Mat lroi = Mat::zeros(S, roi.type());
 				roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
 				faceVideo << lroi;
-				/*
-				//fuer speicherung
-				vector<Mat> dummyFaces;
-				dummyFaces.push_back(roi);
-				facesfromframe dummy;
-				dummy.frameno = framecounter;
-				dummy.facesinframe = faces;
-				dummy.faces = dummyFaces;
-				facesVideo.push_back(dummy);
-				*/
-
+				
+				//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
+				faceInFrame dummy;
+				dummy.frameid = framecounter;
+				dummy.rect = faces;
+				facesinFrame.push_back(dummy);
+				cout << "adding to faces in frame, size: " << facesinFrame.size() << endl;
 			}
 
 			cout << "Writing..." << endl;
 			outputVideo << frame; //Schreibe frame in output video
 			backVideo   << frame; //Schreibe frame in background video
-
-			//Speichere die Gesichter
-			faceInFrame dummy;
-			dummy.frameid = framecounter;
-			dummy.rect = faces;
-			facesinFrame.push_back(dummy);
 		}
 		else cout << "ERROR: Null Frame..." << endl;
+		framecounter++;
 	}
 	return 0;
 }
