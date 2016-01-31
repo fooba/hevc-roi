@@ -95,6 +95,11 @@ AVPacket pVPacket;
 Mat inFrames;
 VideoCapture capture;
 
+FILE *fin = NULL;
+struct YUV_Capture cap;
+enum YUV_ReturnValue ret;
+IplImage *bgr;
+
 //RNG rng(12345);
 char key;
 
@@ -139,10 +144,14 @@ bool querryFrame(void);
 int encodeCmd(std::string filename, std::string outfilename, std::string bitrate);
 
 /**
-  * @brief converts an yuv file to openCV File
+  * @brief inits the Conversation from the YUV-File given by filenmae to OpenCV MAt
   */
-void yuv2Mat(std::string filename);
+void yuv2MatInit(std::string filename);
 
+/**
+  * @brief Converts a YUV capture to OpenCV Mat bgr coded
+  */
+cv::Mat yuv2Mat();
 
 int main(){
 	//Zeitmessung
@@ -185,7 +194,17 @@ int main(){
 	cout << "elapsed Time: " << elapsed << endl;
 
 	//TODO
-	yuv2Mat(backstr);
+	yuv2MatInit(backstr);
+	Mat test;
+	int durchlauf = 0;
+	do{
+		cout << "YUV conv no. " << ++durchlauf << endl;
+		test = yuv2Mat();
+		if (!test.empty()){
+			imshow("yuv test", test);
+			cvWaitKey(1);
+		}
+	} while (!test.empty());
 
 	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
@@ -605,40 +624,28 @@ static bool decodeHEVC(const char *filename){
 }
 
 
-void yuv2Mat(std::string filename){
-	int width;
-	int height;
-	FILE *fin = NULL;
-	struct YUV_Capture cap;
-	enum YUV_ReturnValue ret;
-	IplImage *bgr;
-
-	width  = S.width;
-	height = S.height;
+void yuv2MatInit(std::string filename){
 	fin = fopen(filename.c_str(),"rb");
 	if (!fin){
 		cout << "Couldn't open " << filename << "to convert to CV" << endl;
 		return;
 	}
-	ret = YUV_init(fin, width, height, &cap);
+	ret = YUV_init(fin, S.width, S.height, &cap);
 	assert(ret == YUV_OK);
 
-	bgr = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
+	bgr = cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3);
 	assert(bgr);
+}
 
-	while (1){
-		ret = YUV_read(&cap);
-		if (ret == YUV_EOF){
-			cvWaitKey(0);
-			break;
-		}
-		else if (ret == YUV_IO_ERROR){
-			cout << "IO-Error yuv2cv opening "<< filename << endl;
-			break;
-		}
-		cvCvtColor(cap.ycrcb, bgr, CV_YCrCb2BGR);
-		cvShowImage("yuv2cv", bgr);
-		cvWaitKey(35);
+cv::Mat yuv2Mat(){
+	ret = YUV_read(&cap);
+	if (ret == YUV_EOF){
+		return cv::Mat();
 	}
-
+	else if (ret == YUV_IO_ERROR){
+		cout << "IO-Error yuv2cv reading " << endl;
+		return cv::Mat();
+	}
+	cvCvtColor(cap.ycrcb, bgr, CV_YCrCb2BGR);
+	return cv::Mat(bgr);
 }
