@@ -111,7 +111,7 @@ VideoCapture capture;
 std::vector<faceInFrame> facesinFrame;
 
 //RNG rng(12345);
-char key;
+char key; 
 
 /**
   * Zeigt mehrere Imgs in einem Fenster an
