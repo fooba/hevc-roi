@@ -256,7 +256,7 @@ int main(){
 		cout << "bgr_create image failed by" << yuv_encoded_back << endl;
 
 	//Mat Files of the videos
-	cv::Mat yOne, yBack, yFace;
+	cv::Mat yOne, yBack;
 	int aktFrame = 0;
 
 	//Durchlaufe alle einglesenen Frames und kombiniere Background und face sowie Anzeige & Speichern
@@ -348,7 +348,7 @@ int main(){
 						}
 					}
 					cvCvtColor(cap_face.ycrcb, &bgr_face, CV_YCrCb2BGR);
-					yFace = cv::Mat(&bgr_face);
+					cv::Mat yFace = cv::Mat(&bgr_face);
 						
 
 					cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
@@ -359,6 +359,7 @@ int main(){
 					croppedFace.copyTo(destination);
 					imshow("destination2", destination);
 					cvWaitKey(2);
+					fclose(f_face);
 				}
 				break; //Abort searching for another frame because it won't be anymore left
 			}
@@ -373,8 +374,10 @@ int main(){
 		cvWaitKey(1);
 		outtogether << yBack;
 		cvWaitKey(1);
-		cvShowManyImages("compare", 2, cvCloneImage(&(IplImage)yOne), cvCloneImage(&(IplImage)yBack)); //Show in one window
+		//memory leak
+		//cvShowManyImages("compare", 2, cvCloneImage(&(IplImage)yOne), cvCloneImage(&(IplImage)yBack)); //Show in one window
 		cvWaitKey(1);
+
 		aktFrame++;
 	}
 
@@ -528,8 +531,6 @@ int startVid(void){
 					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
-					imshow("face det", frame); //showing
-					waitKey(1);
 					//Region of Interest = gesicht
 					roi = frame(faces.at(i));
 					imshow("face", roi);
@@ -548,6 +549,8 @@ int startVid(void){
 				}
 			}
 
+			imshow("face det", frame); //showing
+			waitKey(1);
 			cout << "Writing..." << endl;
 			outputVideo << frame; //Schreibe frame in output video
 			backVideo   << frame; //Schreibe frame in background video
