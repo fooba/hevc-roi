@@ -255,24 +255,6 @@ int main(){
 	if (!&bgr_back)
 		cout << "bgr_create image failed by" << yuv_encoded_back << endl;
 
-	//Face Video
-	FILE *f_face = NULL;
-	struct YUV_Capture cap_face;
-	enum YUV_ReturnValue ret_face;
-	IplImage bgr_face;
-	//Init:
-	f_face = fopen(yuv_encoded_face.c_str(), "rb");
-	if (!f_face)
-		cout << "Couldn't open " << yuv_encoded_face << "to convert to CV" << endl;
-	ret_face = YUV_init(f_face, S.width, S.height, &cap_face);
-	if (ret != YUV_OK)
-		cout << "YUV_Init failed by " << yuv_encoded_face << endl;
-	bgr_face = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
-	if (!&bgr_face)
-		cout << "bgr_create image failed by" << yuv_encoded_face << endl;
-
-	yuv2MatInit(yuv_encoded_face, f_face, &ret_face, &bgr_face, &cap_face);
-
 	//Mat Files of the videos
 	cv::Mat yOne, yBack, yFace;
 	int aktFrame = 0;
@@ -282,18 +264,25 @@ int main(){
 		cout << "Could not create Video writer...." << yuv_together << endl;
 		return -1;
 	}
-	bool ready_one = false, ready_back = false, ready_face = false;
-	while(!(ready_one && ready_back && ready_face)){
-		cout << "YUV conv no. " << ++aktFrame << endl;
+	bool ready_one = false, ready_back = false;
+
+	cout << "\nFaces in Frames";
+	for (int q = 0; q < facesinFrame.size(); q++)
+		cout << facesinFrame.at(q).frameid << ", ";
+	cout << endl;
+
+	while(!(ready_one && ready_back)){ //Durchlauf solange nicht YUV EOF der Videos
+		cout << "YUV conv no. " << aktFrame+1 << endl;
 
 		//One
 		ret_one = YUV_read(&cap_one);
 		if (ret_one == YUV_EOF){
-			cout << "YUV EOF" << endl;
+			cout << "YUV EOF one" << endl;
 			ready_one = true;
+			break;
 		}
 		else if (ret_one == YUV_IO_ERROR){
-			cout << "IO-Error yuv2cv reading " << endl;
+			cout << "IO-Error yuv2cv reading one" << endl;
 			break;
 		}
 		cvCvtColor(cap_one.ycrcb, &bgr_one, CV_YCrCb2BGR);
@@ -302,50 +291,76 @@ int main(){
 		//back
 		ret_back = YUV_read(&cap_back);
 		if (ret_back == YUV_EOF){
-			cout << "YUV EOF" << endl;
+			cout << "YUV EOF back" << endl;
 			ready_back = true;
+			break;
 		}
 		else if (ret_back == YUV_IO_ERROR){
-			cout << "IO-Error yuv2cv reading " << endl;
+			cout << "IO-Error yuv2cv reading back" << endl;
 			break;
 		}
 		cvCvtColor(cap_back.ycrcb, &bgr_back, CV_YCrCb2BGR);
 		yBack = cv::Mat(&bgr_back);
 
-		//face
-		ret_face = YUV_read(&cap_face);
-		if (ret_face == YUV_EOF){
-			cout << "YUV EOF" << endl;
-			ready_face = true;
-		}
-		else if (ret_face == YUV_IO_ERROR){
-			cout << "IO-Error yuv2cv reading " << endl;
-			break;
-		}
-		cvCvtColor(cap_face.ycrcb, &bgr_face, CV_YCrCb2BGR);
-		yFace = cv::Mat(&bgr_face);
-
 		//Faces wurde in Frame entdeckt
-		if (ret_face != YUV_EOF){
-			for (int d = 0; d < facesinFrame.size(); d++){
-				if (aktFrame - 1 == facesinFrame.at(d).frameid){
-					for (int j = 0; j < facesinFrame.at(d).rect.size(); j++){
-						cout << "frameID: " << facesinFrame.at(d).frameid << endl;
-						cout << "face: " << j << endl;
-						int width = facesinFrame.at(d).rect.at(j).width;
-						int height = facesinFrame.at(d).rect.at(j).height;
-						int x = facesinFrame.at(d).rect.at(j).x;
-						int y = facesinFrame.at(d).rect.at(j).y;
-						cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
-						cv::Rect pos(cv::Point(x, y), cv::Size(width, height)); //rect where Face should be
-						cv::Mat destination(yBack, pos);
-						imshow("destination", destination);
-						cvWaitKey(2);
-						croppedFace.copyTo(destination);
-						imshow("destination2", destination);
-						cvWaitKey(2);
+		int verschiebung = 0;
+		for (int d = 0; d < facesinFrame.size(); d++){ //Durchlaufe faces rects und
+			if (aktFrame == facesinFrame.at(d).frameid){ //Suche Frame in Faces Vector
+				for (int j = 0; j < facesinFrame.at(d).rect.size(); j++){
+					if (j > 0){
+						verschiebung++;
+						cout << "Verschiebung " << j << endl; 
 					}
+					cout << "frameID: " << facesinFrame.at(d).frameid << endl;
+					cout << "aktFrame: " << aktFrame << endl;
+					cout << "face: " << j << endl;
+					int width = facesinFrame.at(d).rect.at(j).width;
+					int height = facesinFrame.at(d).rect.at(j).height;
+					int x = facesinFrame.at(d).rect.at(j).x;
+					int y = facesinFrame.at(d).rect.at(j).y;
+
+					//Look for face in yuv-Vid
+					//Face Video
+					FILE *f_face = NULL;
+					struct YUV_Capture cap_face;
+					enum YUV_ReturnValue ret_face;
+					IplImage bgr_face;
+					//Init:
+					f_face = fopen(yuv_encoded_face.c_str(), "rb");
+					if (!f_face)
+						cout << "Couldn't open " << yuv_encoded_face << "to convert to CV" << endl;
+					ret_face = YUV_init(f_face, S.width, S.height, &cap_face);
+					if (ret != YUV_OK)
+						cout << "YUV_Init failed by " << yuv_encoded_face << endl;
+					bgr_face = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
+					if (!&bgr_face)
+						cout << "bgr_create image failed by" << yuv_encoded_face << endl;
+					//decode
+					for (int p = 0; p <= (d + verschiebung); p++){ //Suche Frame in faces yuv plus verschiebung um frames mit mehren faces
+						ret_face = YUV_read(&cap_face);
+						if (ret_face == YUV_EOF){
+							cout << "YUV EOF face" << endl;
+							break;
+						}
+						else if (ret_face == YUV_IO_ERROR){
+							cout << "IO-Error yuv2cv reading face" << endl;
+							break;
+						}
+					}
+					cvCvtColor(cap_face.ycrcb, &bgr_face, CV_YCrCb2BGR);
+					yFace = cv::Mat(&bgr_face);
+						
+
+					cv::Mat croppedFace = yFace(Rect(0, 0, width, height)); //Cut faces frame
+					cv::Rect pos(cv::Point(x, y), cv::Size(width, height)); //rect where Face should be
+					cv::Mat destination(yBack, pos);
+					imshow("destination", destination);
+					cvWaitKey(2);
+					croppedFace.copyTo(destination);
+					imshow("destination2", destination);
+					cvWaitKey(2);
 				}
+				break; //Abort searching for another frame because it won't be anymore left
 			}
 		}
 
@@ -358,6 +373,11 @@ int main(){
 		cvWaitKey(1);
 		outtogether << yBack;
 		cvWaitKey(1);
+		cvShowManyImages("compare", 2, cvCloneImage(&(IplImage)yOne), cvCloneImage(&(IplImage)yBack)); //Show in one window
+		cvWaitKey(1);
+		aktFrame++;
+		//TODO
+		cin.ignore();
 	}
 
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
@@ -483,24 +503,22 @@ int startVid(void){
 
 
 	Mat roi;
-	int i = 0;
+	int f = 0;
 	while (capture.read(frame)){
-		cout << "  frame: " << ++i << endl;
+		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		//if (i >= 25) break; //TODO ONLY READ first 2 FRAMES
+		if (f >= 25) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
-			for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
+			for (size_t i = 0; i < faces.size(); i++) //Durchlaufe alle detektierten Geischter und male Rechteck sowie Speicherung
 			{
 				//Remove too small faces
 				if (faces.at(i).width <= ((int)(GROP_FACE_SIZE*(capture.get(CV_CAP_PROP_FRAME_WIDTH))))){
 					cout << "face witdth: " << faces.at(i).width << " frame_size: " << GROP_FACE_SIZE* capture.get(CV_CAP_PROP_FRAME_WIDTH) << endl;
 					cout << "face smaller than " << GROP_FACE_SIZE << "x of video -> delete" << endl;
-					cout << "faces before: " << faces.size() << endl;
 					faces.erase(faces.begin() + i);
-					cout << "faces after: " << faces.size() << endl;
 					//cin.ignore();
 					continue;
 				}
@@ -510,10 +528,9 @@ int startVid(void){
 				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
-				imshow("face det", frame);
-				waitKey(1);
 #endif
-
+				imshow("face det", frame); //showing
+				waitKey(1);
 				//Region of Interest = gesicht
 				roi = frame(faces.at(i));
 				imshow("face", roi);
@@ -522,14 +539,14 @@ int startVid(void){
 				Mat lroi = Mat::zeros(S, roi.type());
 				roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
 				faceVideo << lroi;
-				
-				//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
-				faceInFrame dummy;
-				dummy.frameid = framecounter;
-				dummy.rect = faces;
-				facesinFrame.push_back(dummy);
-				cout << "adding to faces in frame, size: " << facesinFrame.size() << endl;
 			}
+
+			//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
+			faceInFrame dummy;
+			dummy.frameid = f - 1;
+			dummy.rect = faces;
+			facesinFrame.push_back(dummy);
+			cout << "adding frame " << dummy.frameid << " faces " << dummy.rect.size() << endl;
 
 			cout << "Writing..." << endl;
 			outputVideo << frame; //Schreibe frame in output video
