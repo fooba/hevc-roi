@@ -376,8 +376,6 @@ int main(){
 		cvShowManyImages("compare", 2, cvCloneImage(&(IplImage)yOne), cvCloneImage(&(IplImage)yBack)); //Show in one window
 		cvWaitKey(1);
 		aktFrame++;
-		//TODO
-		cin.ignore();
 	}
 
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
@@ -504,49 +502,51 @@ int startVid(void){
 
 	Mat roi;
 	int f = 0;
+	int anzahlFaces = 0;
 	while (capture.read(frame)){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		if (f >= 25) break; //TODO ONLY READ first 2 FRAMES
+		//if (f >= 25) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
 			for (size_t i = 0; i < faces.size(); i++) //Durchlaufe alle detektierten Geischter und male Rechteck sowie Speicherung
 			{
+				anzahlFaces++;
 				//Remove too small faces
 				if (faces.at(i).width <= ((int)(GROP_FACE_SIZE*(capture.get(CV_CAP_PROP_FRAME_WIDTH))))){
 					cout << "face witdth: " << faces.at(i).width << " frame_size: " << GROP_FACE_SIZE* capture.get(CV_CAP_PROP_FRAME_WIDTH) << endl;
 					cout << "face smaller than " << GROP_FACE_SIZE << "x of video -> delete" << endl;
 					faces.erase(faces.begin() + i);
+					i--;
 					//cin.ignore();
-					continue;
-				}
-
-
+					anzahlFaces--;
+				}else{
 #ifdef WITH_FACE_RECTANGLE
-				Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
-				Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
-				rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
+					Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
+					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
+					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
-				imshow("face det", frame); //showing
-				waitKey(1);
-				//Region of Interest = gesicht
-				roi = frame(faces.at(i));
-				imshow("face", roi);
-				waitKey(1);
-				cout << "writing face no. " << i + 1 << endl;
-				Mat lroi = Mat::zeros(S, roi.type());
-				roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
-				faceVideo << lroi;
-			}
+					imshow("face det", frame); //showing
+					waitKey(1);
+					//Region of Interest = gesicht
+					roi = frame(faces.at(i));
+					imshow("face", roi);
+					waitKey(1);
+					cout << "writing face no. " << i + 1 << endl;
+					Mat lroi = Mat::zeros(S, roi.type());
+					roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
+					faceVideo << lroi;
 
-			//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
-			faceInFrame dummy;
-			dummy.frameid = f - 1;
-			dummy.rect = faces;
-			facesinFrame.push_back(dummy);
-			cout << "adding frame " << dummy.frameid << " faces " << dummy.rect.size() << endl;
+					//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
+					faceInFrame dummy;
+					dummy.frameid = f - 1;
+					dummy.rect = faces;
+					facesinFrame.push_back(dummy);
+					cout << "adding frame " << dummy.frameid << " faces " << dummy.rect.size() << endl;
+				}
+			}
 
 			cout << "Writing..." << endl;
 			outputVideo << frame; //Schreibe frame in output video
@@ -555,6 +555,8 @@ int startVid(void){
 		else cout << "ERROR: Null Frame..." << endl;
 		framecounter++;
 	}
+	cout << " total " << anzahlFaces << " faces detected" << endl;
+	cout << " faces array "<< facesinFrame.size() << endl;
 	return 0;
 }
 
