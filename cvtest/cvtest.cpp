@@ -70,6 +70,7 @@ const std::string yuv_encoded_back = "C:\\yuv_back.yuv";
 const std::string yuv_encoded_face = "C:\\yuv_face.yuv";
 
 const std::string yuv_together	   = "C:\\together.yuv";
+const std::string hevc_together    = "C:\\together.mkv";
 
 
 const int fourcc_output_codec =  CV_FOURCC('I', '4', '2', '0');
@@ -162,6 +163,11 @@ int encodeCmd(std::string filename, std::string outfilename, std::string bitrate
   * @brief decode inFile in outFile
 */
 int decodeCmd(std::string inFilename, std::string outFilename);
+
+/**
+  * @brief encode an the inFilename to outFilename lossless
+  */
+int encodeLosslessHevc(std::string inFilename, std::string outFilename);
 
 /**
   * @brief inits the Conversation from the YUV-File given by filenmae to OpenCV Mat
@@ -359,7 +365,11 @@ int main(){
 					croppedFace.copyTo(destination);
 					imshow("destination2", destination);
 					cvWaitKey(2);
+
+					//Memory Leak
 					fclose(f_face);
+					croppedFace.release();
+					destination.release();
 				}
 				break; //Abort searching for another frame because it won't be anymore left
 			}
@@ -380,6 +390,9 @@ int main(){
 
 		aktFrame++;
 	}
+
+	//Lossless encoding to HEVC
+	encodeLosslessHevc(yuv_together,hevc_together);
 
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "complete elapsed Time: " << elapsed << endl;
@@ -510,7 +523,7 @@ int startVid(void){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		//if (f >= 25) break; //TODO ONLY READ first 2 FRAMES
+		//if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -722,6 +735,15 @@ int encodeCmd(std::string filename, std::string outfilename, std::string bitrate
 int decodeCmd(std::string inFilename, std::string outFilename){
 	int ret = 0;
 	std::string befehl = "ffmpeg -y -i " + inFilename + " -loglevel quiet " + outFilename;
+	cout << endl << "Decoding msg: " << endl;
+	cout << befehl << endl;
+	ret = system(befehl.c_str());
+	return ret;
+}
+
+int encodeLosslessHevc(std::string inFilename, std::string outFilename){
+	int ret = 0;
+	std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr +" -i " + inFilename + " -c:v libx265 -x265-params lossless " + outFilename;
 	cout << endl << "Decoding msg: " << endl;
 	cout << befehl << endl;
 	ret = system(befehl.c_str());
