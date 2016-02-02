@@ -1,0 +1,1174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.5"/>
+<title>HEVC-ROI: cvtest/cvtest.cpp-Dateireferenz</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">HEVC-ROI
+   </div>
+   <div id="projectbrief">Facerecognition with OpenCV Convert to ROI for HEVC Encoding</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Erzeugt von Doxygen 1.8.5 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Hauptseite</span></a></li>
+      <li><a href="pages.html"><span>Zusätzliche&#160;Informationen</span></a></li>
+      <li><a href="annotated.html"><span>Klassen</span></a></li>
+      <li class="current"><a href="files.html"><span>Dateien</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Auflistung&#160;der&#160;Dateien</span></a></li>
+      <li><a href="globals.html"><span>Datei-Elemente</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_2eb347f79d91f5a86190bd940dca1c66.html">cvtest</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Klassen</a> &#124;
+<a href="#define-members">Makrodefinitionen</a> &#124;
+<a href="#func-members">Funktionen</a> &#124;
+<a href="#var-members">Variablen</a>  </div>
+  <div class="headertitle">
+<div class="title">cvtest.cpp-Dateireferenz</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="stdafx_8h_source.html">stdafx.h</a>&quot;</code><br/>
+<code>#include &lt;stdio.h&gt;</code><br/>
+<code>#include &lt;iostream&gt;</code><br/>
+<code>#include &lt;ctime&gt;</code><br/>
+<code>#include &lt;stdlib.h&gt;</code><br/>
+<code>#include &lt;assert.h&gt;</code><br/>
+<code>#include &quot;opencv2/objdetect/objdetect.hpp&quot;</code><br/>
+<code>#include &quot;opencv2/highgui/highgui.hpp&quot;</code><br/>
+<code>#include &quot;opencv2/imgproc/imgproc.hpp&quot;</code><br/>
+<code>#include &lt;opencv\cv.h&gt;</code><br/>
+<code>#include &quot;<a class="el" href="yuv_8h_source.html">yuv.h</a>&quot;</code><br/>
+<code>#include &lt;libavcodec/avcodec.h&gt;</code><br/>
+<code>#include &lt;libavformat/avformat.h&gt;</code><br/>
+<code>#include &lt;libswscale/swscale.h&gt;</code><br/>
+<code>#include &lt;libavutil\mem.h&gt;</code><br/>
+<code>#include &lt;x265.h&gt;</code><br/>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Klassen</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfacesfromframe.html">facesfromframe</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structface_in_frame.html">faceInFrame</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Makrodefinitionen</h2></td></tr>
+<tr class="memitem:af59b1ff88af31ccabc1985b4be822b79"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#af59b1ff88af31ccabc1985b4be822b79">SHOW_DETECTED_FACES</a></td></tr>
+<tr class="separator:af59b1ff88af31ccabc1985b4be822b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89a3b3eea1a7117f0649dc5bab25990f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a89a3b3eea1a7117f0649dc5bab25990f">WITH_FACE_RECTANGLE</a></td></tr>
+<tr class="separator:a89a3b3eea1a7117f0649dc5bab25990f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c3dd665153a5d0ed88fb81efc471f9a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a4c3dd665153a5d0ed88fb81efc471f9a">GROP_FACE_SIZE</a>&#160;&#160;&#160;0.1</td></tr>
+<tr class="separator:a4c3dd665153a5d0ed88fb81efc471f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa056f69afc10fc2bc937fa28fc2fd4f5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#aa056f69afc10fc2bc937fa28fc2fd4f5">BITRATE_ONE</a>&#160;&#160;&#160;&quot;10k&quot;</td></tr>
+<tr class="separator:aa056f69afc10fc2bc937fa28fc2fd4f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad765e05b59bedfbb51057c85afbcec72"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ad765e05b59bedfbb51057c85afbcec72">BITRATE_FACE</a>&#160;&#160;&#160;&quot;700k&quot;</td></tr>
+<tr class="separator:ad765e05b59bedfbb51057c85afbcec72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9fd36064dff3eb9f3534b2774e585b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ad9fd36064dff3eb9f3534b2774e585b0">BITRATE_SURROUND</a>&#160;&#160;&#160;&quot;5k&quot;</td></tr>
+<tr class="separator:ad9fd36064dff3eb9f3534b2774e585b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Funktionen</h2></td></tr>
+<tr class="memitem:a082ef8a30749670daff1e97c5fce82fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a082ef8a30749670daff1e97c5fce82fc">cvShowManyImages</a> (char *title, int nArgs,...)</td></tr>
+<tr class="separator:a082ef8a30749670daff1e97c5fce82fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5410da62cca4620f9cee4645d0e00db4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a5410da62cca4620f9cee4645d0e00db4">startCam</a> (void)</td></tr>
+<tr class="memdesc:a5410da62cca4620f9cee4645d0e00db4"><td class="mdescLeft">&#160;</td><td class="mdescRight">start an openCV session to the webcam and detect faces in stream quit with escape-btn  <a href="#a5410da62cca4620f9cee4645d0e00db4">Mehr ...</a><br/></td></tr>
+<tr class="separator:a5410da62cca4620f9cee4645d0e00db4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6397c2a76d53916a71f61e5697c376fe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a6397c2a76d53916a71f61e5697c376fe">startVid</a> (void)</td></tr>
+<tr class="memdesc:a6397c2a76d53916a71f61e5697c376fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">start an openCV session to the webcam and detect faces in stream quit with escape-btn  <a href="#a6397c2a76d53916a71f61e5697c376fe">Mehr ...</a><br/></td></tr>
+<tr class="separator:a6397c2a76d53916a71f61e5697c376fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a140cd5ce7e60000abc02f8fe8b29d4d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a140cd5ce7e60000abc02f8fe8b29d4d4">encodeToOne</a> (void)</td></tr>
+<tr class="memdesc:a140cd5ce7e60000abc02f8fe8b29d4d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">fuegt die erkannten Faces und in den Hintergrund ein und enkodiert erneut  <a href="#a140cd5ce7e60000abc02f8fe8b29d4d4">Mehr ...</a><br/></td></tr>
+<tr class="separator:a140cd5ce7e60000abc02f8fe8b29d4d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97266a8b3822f618c1f4c1ec7706b78e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a97266a8b3822f618c1f4c1ec7706b78e">ffmpegopenVid</a> (const char *filename)</td></tr>
+<tr class="separator:a97266a8b3822f618c1f4c1ec7706b78e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ada866e502f9b66b6941f00465229ec"><td class="memItemLeft" align="right" valign="top">vector&lt; Rect &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a7ada866e502f9b66b6941f00465229ec">detectFaces</a> (Mat frame)</td></tr>
+<tr class="memdesc:a7ada866e502f9b66b6941f00465229ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">detectFaces detektiert Gesichter im uebergebenen frame.  <a href="#a7ada866e502f9b66b6941f00465229ec">Mehr ...</a><br/></td></tr>
+<tr class="separator:a7ada866e502f9b66b6941f00465229ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2e29bd6e0166e4bdd44ca80dcbcc9c0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ad2e29bd6e0166e4bdd44ca80dcbcc9c0">querryFrame</a> (void)</td></tr>
+<tr class="memdesc:ad2e29bd6e0166e4bdd44ca80dcbcc9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verarbeitet ein neues Frame des Input Videos.  <a href="#ad2e29bd6e0166e4bdd44ca80dcbcc9c0">Mehr ...</a><br/></td></tr>
+<tr class="separator:ad2e29bd6e0166e4bdd44ca80dcbcc9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40fe8f21a84aca3f566d0149f6d71515"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a40fe8f21a84aca3f566d0149f6d71515">encodeCmd</a> (std::string filename, std::string outfilename, std::string bitrate)</td></tr>
+<tr class="memdesc:a40fe8f21a84aca3f566d0149f6d71515"><td class="mdescLeft">&#160;</td><td class="mdescRight">encodiert als HEVC mit Command-line Prompt  <a href="#a40fe8f21a84aca3f566d0149f6d71515">Mehr ...</a><br/></td></tr>
+<tr class="separator:a40fe8f21a84aca3f566d0149f6d71515"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e8bfc31548647cd2a0dc5f0c63bc988"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a2e8bfc31548647cd2a0dc5f0c63bc988">decodeCmd</a> (std::string inFilename, std::string outFilename)</td></tr>
+<tr class="memdesc:a2e8bfc31548647cd2a0dc5f0c63bc988"><td class="mdescLeft">&#160;</td><td class="mdescRight">decode inFile in outFile  <a href="#a2e8bfc31548647cd2a0dc5f0c63bc988">Mehr ...</a><br/></td></tr>
+<tr class="separator:a2e8bfc31548647cd2a0dc5f0c63bc988"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00c85948caf75b715210641755bc454c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a00c85948caf75b715210641755bc454c">encodeLosslessHevc</a> (std::string inFilename, std::string outFilename)</td></tr>
+<tr class="memdesc:a00c85948caf75b715210641755bc454c"><td class="mdescLeft">&#160;</td><td class="mdescRight">encode an the inFilename to outFilename lossless  <a href="#a00c85948caf75b715210641755bc454c">Mehr ...</a><br/></td></tr>
+<tr class="separator:a00c85948caf75b715210641755bc454c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8f640ce4a8b3bcc23ba4fcd99235e1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#aa8f640ce4a8b3bcc23ba4fcd99235e1c">yuv2MatInit</a> (std::string filename, FILE *fin, <a class="el" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a> *ret, IplImage *bgr, <a class="el" href="struct_y_u_v___capture.html">YUV_Capture</a> *cap)</td></tr>
+<tr class="memdesc:aa8f640ce4a8b3bcc23ba4fcd99235e1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">inits the Conversation from the YUV-File given by filenmae to OpenCV Mat  <a href="#aa8f640ce4a8b3bcc23ba4fcd99235e1c">Mehr ...</a><br/></td></tr>
+<tr class="separator:aa8f640ce4a8b3bcc23ba4fcd99235e1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e4703cd27a0191cf7ce611fa208d827"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a4e4703cd27a0191cf7ce611fa208d827">yuv2Mat</a> (<a class="el" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a> *ret, IplImage *bgr, <a class="el" href="struct_y_u_v___capture.html">YUV_Capture</a> *cap)</td></tr>
+<tr class="memdesc:a4e4703cd27a0191cf7ce611fa208d827"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a YUV capture to OpenCV Mat bgr coded.  <a href="#a4e4703cd27a0191cf7ce611fa208d827">Mehr ...</a><br/></td></tr>
+<tr class="separator:a4e4703cd27a0191cf7ce611fa208d827"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
+<tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variablen</h2></td></tr>
+<tr class="memitem:a8f0af612ab10eafc7f1647bf6a8699a0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a8f0af612ab10eafc7f1647bf6a8699a0">wait4Cam</a> = 2</td></tr>
+<tr class="separator:a8f0af612ab10eafc7f1647bf6a8699a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96bf064430a8c608a5e32ea001a58384"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a96bf064430a8c608a5e32ea001a58384">inputfilename</a> = &quot;C:\\testshort.mp4&quot;</td></tr>
+<tr class="separator:a96bf064430a8c608a5e32ea001a58384"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c60a987ed28783d11b8de968232b3cc"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a0c60a987ed28783d11b8de968232b3cc">roistr</a> = &quot;C:\\faces.yuv&quot;</td></tr>
+<tr class="separator:a0c60a987ed28783d11b8de968232b3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf5ad476a95983d6613deb23a57c4973"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#aaf5ad476a95983d6613deb23a57c4973">videostr</a> = &quot;C:\\video.yuv&quot;</td></tr>
+<tr class="separator:aaf5ad476a95983d6613deb23a57c4973"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62c1cae789f825edaa8f0900431b710e"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a62c1cae789f825edaa8f0900431b710e">backstr</a> = &quot;C:\\background.yuv&quot;</td></tr>
+<tr class="separator:a62c1cae789f825edaa8f0900431b710e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76228b9abeb51e283dcd134ecb2ea446"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a76228b9abeb51e283dcd134ecb2ea446">outvideostr</a> = &quot;C:\\video.mkv&quot;</td></tr>
+<tr class="separator:a76228b9abeb51e283dcd134ecb2ea446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a088f929e12012100f8241f5edefb5077"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a088f929e12012100f8241f5edefb5077">faceoutstr</a> = &quot;C:\\faces.mkv&quot;</td></tr>
+<tr class="separator:a088f929e12012100f8241f5edefb5077"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57a658ea4ab15bd64e3ce03550eaa1d5"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a57a658ea4ab15bd64e3ce03550eaa1d5">backoutstr</a> = &quot;C:\\background.mkv&quot;</td></tr>
+<tr class="separator:a57a658ea4ab15bd64e3ce03550eaa1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab21f568d14c4d57c2ce86d1af96135c1"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ab21f568d14c4d57c2ce86d1af96135c1">yuv_encoded_one</a> = &quot;C:\\yuv_one.yuv&quot;</td></tr>
+<tr class="separator:ab21f568d14c4d57c2ce86d1af96135c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac99389d184ca31ff9a99b5e608bd8a85"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ac99389d184ca31ff9a99b5e608bd8a85">yuv_encoded_back</a> = &quot;C:\\yuv_back.yuv&quot;</td></tr>
+<tr class="separator:ac99389d184ca31ff9a99b5e608bd8a85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7f9ea26811941ec3f177e984db7eba6"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ae7f9ea26811941ec3f177e984db7eba6">yuv_encoded_face</a> = &quot;C:\\yuv_face.yuv&quot;</td></tr>
+<tr class="separator:ae7f9ea26811941ec3f177e984db7eba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ba0d74f2b03eb69076bfd9642a0307b"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a1ba0d74f2b03eb69076bfd9642a0307b">yuv_together</a> = &quot;C:\\together.yuv&quot;</td></tr>
+<tr class="separator:a1ba0d74f2b03eb69076bfd9642a0307b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47ba6cda63e9e2cd4d2846796f40b660"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a47ba6cda63e9e2cd4d2846796f40b660">hevc_together</a> = &quot;C:\\together.mkv&quot;</td></tr>
+<tr class="separator:a47ba6cda63e9e2cd4d2846796f40b660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a529018e105e46d0b6ad879c72477d5f5"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a529018e105e46d0b6ad879c72477d5f5">fourcc_output_codec</a> = CV_FOURCC('I', '4', '2', '0')</td></tr>
+<tr class="separator:a529018e105e46d0b6ad879c72477d5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0ec15cb6d5d8dd96150a28f26625bee"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structfacesfromframe.html">facesfromframe</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ae0ec15cb6d5d8dd96150a28f26625bee">facesVideo</a></td></tr>
+<tr class="separator:ae0ec15cb6d5d8dd96150a28f26625bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad496af1d029ffb9ab9a60eafa31f550c"><td class="memItemLeft" align="right" valign="top">VideoWriter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ad496af1d029ffb9ab9a60eafa31f550c">outputVideo</a></td></tr>
+<tr class="separator:ad496af1d029ffb9ab9a60eafa31f550c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09832ba1892d87090a37caa514257ca4"><td class="memItemLeft" align="right" valign="top">VideoWriter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a09832ba1892d87090a37caa514257ca4">faceVideo</a></td></tr>
+<tr class="separator:a09832ba1892d87090a37caa514257ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a479522cbb8df2e32e4105410ca66e20b"><td class="memItemLeft" align="right" valign="top">VideoWriter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a479522cbb8df2e32e4105410ca66e20b">backVideo</a></td></tr>
+<tr class="separator:a479522cbb8df2e32e4105410ca66e20b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a053ed4ed31e793bc45c6a5349e8b6a22"><td class="memItemLeft" align="right" valign="top">VideoWriter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a053ed4ed31e793bc45c6a5349e8b6a22">outtogether</a></td></tr>
+<tr class="separator:a053ed4ed31e793bc45c6a5349e8b6a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6375d30d47d6711b2838525956af2d"><td class="memItemLeft" align="right" valign="top">Size&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a4d6375d30d47d6711b2838525956af2d">S</a></td></tr>
+<tr class="separator:a4d6375d30d47d6711b2838525956af2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63da2a617b72a1630998a4d8b4d26cd3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a63da2a617b72a1630998a4d8b4d26cd3">fps</a></td></tr>
+<tr class="separator:a63da2a617b72a1630998a4d8b4d26cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8fa3e55e1552becf3a925844d5768f6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ac8fa3e55e1552becf3a925844d5768f6">fpsstr</a> = &quot;25&quot;</td></tr>
+<tr class="separator:ac8fa3e55e1552becf3a925844d5768f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a503cd1bb749179b17a53653e1540f089"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a503cd1bb749179b17a53653e1540f089">sizestr</a> = &quot;1920x10080&quot;</td></tr>
+<tr class="separator:a503cd1bb749179b17a53653e1540f089"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f4173fd4828d1d948935a30e1841263"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a3f4173fd4828d1d948935a30e1841263">test</a></td></tr>
+<tr class="separator:a3f4173fd4828d1d948935a30e1841263"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9fef9b0bee8b212c2269922f08ae2a7"><td class="memItemLeft" align="right" valign="top">cv::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ab9fef9b0bee8b212c2269922f08ae2a7">face_cascade_name</a> = &quot;haarcascade_frontalface_alt.xml&quot;</td></tr>
+<tr class="separator:ab9fef9b0bee8b212c2269922f08ae2a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53f51a6fe1e841c9dfa93426447743ef"><td class="memItemLeft" align="right" valign="top">cv::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a53f51a6fe1e841c9dfa93426447743ef">eyes_cascade_name</a> = &quot;haarcascade_eye_tree_eyeglasses.xml&quot;</td></tr>
+<tr class="separator:a53f51a6fe1e841c9dfa93426447743ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1aabdc311a65aaaede4d72fa8fe95494"><td class="memItemLeft" align="right" valign="top">CascadeClassifier&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a1aabdc311a65aaaede4d72fa8fe95494">face_cascade</a></td></tr>
+<tr class="separator:a1aabdc311a65aaaede4d72fa8fe95494"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1098de0662992fbc4c23e314074f4a2"><td class="memItemLeft" align="right" valign="top">CascadeClassifier&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ab1098de0662992fbc4c23e314074f4a2">eyes_cascade</a></td></tr>
+<tr class="separator:ab1098de0662992fbc4c23e314074f4a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa819764b7e23bf4f709eda39eb17eb79"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#aa819764b7e23bf4f709eda39eb17eb79">window_name</a> = &quot;Face detection &amp; ROI encoding using HEVC&quot;</td></tr>
+<tr class="separator:aa819764b7e23bf4f709eda39eb17eb79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c91ecbe5847f4ae902ebd6143970da6"><td class="memItemLeft" align="right" valign="top">Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a8c91ecbe5847f4ae902ebd6143970da6">cvFrameContext</a></td></tr>
+<tr class="separator:a8c91ecbe5847f4ae902ebd6143970da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af285cd22a802b291c5f930864351cd61"><td class="memItemLeft" align="right" valign="top">struct SwsContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#af285cd22a802b291c5f930864351cd61">pVImgConvertCtx</a></td></tr>
+<tr class="separator:af285cd22a802b291c5f930864351cd61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4541bb284c0dbb654186737bc8dbfea3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a4541bb284c0dbb654186737bc8dbfea3">videoStream</a></td></tr>
+<tr class="separator:a4541bb284c0dbb654186737bc8dbfea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf7b1f9482d110b725679536ea0eb293"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#adf7b1f9482d110b725679536ea0eb293">frameFinished</a></td></tr>
+<tr class="separator:adf7b1f9482d110b725679536ea0eb293"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0da55f33789fb166f1b32e3f0fcd893"><td class="memItemLeft" align="right" valign="top">AVFormatContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ad0da55f33789fb166f1b32e3f0fcd893">pVFormatCtx</a></td></tr>
+<tr class="separator:ad0da55f33789fb166f1b32e3f0fcd893"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b59098c21cf8840b02056b0353786c0"><td class="memItemLeft" align="right" valign="top">AVCodecContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a3b59098c21cf8840b02056b0353786c0">pVCodecCtx</a></td></tr>
+<tr class="separator:a3b59098c21cf8840b02056b0353786c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a6aa21083e62174c8d97039da5ef4f4"><td class="memItemLeft" align="right" valign="top">AVCodec *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a1a6aa21083e62174c8d97039da5ef4f4">pVCodec</a></td></tr>
+<tr class="separator:a1a6aa21083e62174c8d97039da5ef4f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6d0994357aef679d10d3908af1af49a"><td class="memItemLeft" align="right" valign="top">AVFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ab6d0994357aef679d10d3908af1af49a">pVFrame</a></td></tr>
+<tr class="separator:ab6d0994357aef679d10d3908af1af49a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a227aa288937bb7be95802a2bebdad042"><td class="memItemLeft" align="right" valign="top">AVFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a227aa288937bb7be95802a2bebdad042">pVFrameBGR</a></td></tr>
+<tr class="separator:a227aa288937bb7be95802a2bebdad042"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7959bc830725ccd7f6261d59bc1778af"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a7959bc830725ccd7f6261d59bc1778af">bufferBGR</a></td></tr>
+<tr class="separator:a7959bc830725ccd7f6261d59bc1778af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08bbe8693b9c000265b3e58a0007ddd9"><td class="memItemLeft" align="right" valign="top">AVPacket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a08bbe8693b9c000265b3e58a0007ddd9">pVPacket</a></td></tr>
+<tr class="separator:a08bbe8693b9c000265b3e58a0007ddd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adccabe0638374057965e9c155bb170ba"><td class="memItemLeft" align="right" valign="top">Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#adccabe0638374057965e9c155bb170ba">inFrames</a></td></tr>
+<tr class="separator:adccabe0638374057965e9c155bb170ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a988c3306e17660881c1ae04a0e1fcf34"><td class="memItemLeft" align="right" valign="top">VideoCapture&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#a988c3306e17660881c1ae04a0e1fcf34">capture</a></td></tr>
+<tr class="separator:a988c3306e17660881c1ae04a0e1fcf34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac05db5c82958888cd7971f1c77b9dec0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structface_in_frame.html">faceInFrame</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#ac05db5c82958888cd7971f1c77b9dec0">facesinFrame</a></td></tr>
+<tr class="separator:ac05db5c82958888cd7971f1c77b9dec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acad36f7a1211e9e9da68e181667d9c3f"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cvtest_8cpp.html#acad36f7a1211e9e9da68e181667d9c3f">key</a></td></tr>
+<tr class="separator:acad36f7a1211e9e9da68e181667d9c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Makro-Dokumentation</h2>
+<a class="anchor" id="ad765e05b59bedfbb51057c85afbcec72"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BITRATE_FACE&#160;&#160;&#160;&quot;700k&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa056f69afc10fc2bc937fa28fc2fd4f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BITRATE_ONE&#160;&#160;&#160;&quot;10k&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Definitions for Bitrates </p>
+
+</div>
+</div>
+<a class="anchor" id="ad9fd36064dff3eb9f3534b2774e585b0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BITRATE_SURROUND&#160;&#160;&#160;&quot;5k&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4c3dd665153a5d0ed88fb81efc471f9a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GROP_FACE_SIZE&#160;&#160;&#160;0.1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af59b1ff88af31ccabc1985b4be822b79"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SHOW_DETECTED_FACES</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a89a3b3eea1a7117f0649dc5bab25990f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WITH_FACE_RECTANGLE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Dokumentation der Funktionen</h2>
+<a class="anchor" id="a082ef8a30749670daff1e97c5fce82fc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cvShowManyImages </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nArgs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Zeigt mehrere Imgs in einem Fenster an </p>
+
+</div>
+</div>
+<a class="anchor" id="a2e8bfc31548647cd2a0dc5f0c63bc988"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int decodeCmd </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>inFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>outFilename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>decode inFile in outFile </p>
+
+</div>
+</div>
+<a class="anchor" id="a7ada866e502f9b66b6941f00465229ec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; Rect &gt; detectFaces </td>
+          <td>(</td>
+          <td class="paramtype">Mat&#160;</td>
+          <td class="paramname"><em>frame</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>detectFaces detektiert Gesichter im uebergebenen frame. </p>
+<dl class="params"><dt>Parameter</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">frame</td><td>Frame in dem nach gesichtern gesucht werden soll </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Rückgabe</dt><dd>vektor aller gefundenen Gesichter </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a40fe8f21a84aca3f566d0149f6d71515"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int encodeCmd </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>outfilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>bitrate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>encodiert als HEVC mit Command-line Prompt </p>
+
+</div>
+</div>
+<a class="anchor" id="a00c85948caf75b715210641755bc454c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int encodeLosslessHevc </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>inFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>outFilename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>encode an the inFilename to outFilename lossless </p>
+
+</div>
+</div>
+<a class="anchor" id="a140cd5ce7e60000abc02f8fe8b29d4d4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int encodeToOne </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>fuegt die erkannten Faces und in den Hintergrund ein und enkodiert erneut </p>
+
+</div>
+</div>
+<a class="anchor" id="a97266a8b3822f618c1f4c1ec7706b78e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ffmpegopenVid </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Open a Video with FFMPEG </p>
+
+</div>
+</div>
+<a class="anchor" id="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int main </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>ENCODING FINISHED: Compare different video files </p>
+
+</div>
+</div>
+<a class="anchor" id="ad2e29bd6e0166e4bdd44ca80dcbcc9c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool querryFrame </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verarbeitet ein neues Frame des Input Videos. </p>
+<dl class="section return"><dt>Rückgabe</dt><dd>neuer Frame verfuegbar?? </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a5410da62cca4620f9cee4645d0e00db4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void startCam </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>start an openCV session to the webcam and detect faces in stream quit with escape-btn </p>
+
+</div>
+</div>
+<a class="anchor" id="a6397c2a76d53916a71f61e5697c376fe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int startVid </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>start an openCV session to the webcam and detect faces in stream quit with escape-btn </p>
+
+</div>
+</div>
+<a class="anchor" id="a4e4703cd27a0191cf7ce611fa208d827"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cv::Mat yuv2Mat </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a> *&#160;</td>
+          <td class="paramname"><em>ret</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IplImage *&#160;</td>
+          <td class="paramname"><em>bgr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_y_u_v___capture.html">YUV_Capture</a> *&#160;</td>
+          <td class="paramname"><em>cap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts a YUV capture to OpenCV Mat bgr coded. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa8f640ce4a8b3bcc23ba4fcd99235e1c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void yuv2MatInit </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>fin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a> *&#160;</td>
+          <td class="paramname"><em>ret</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IplImage *&#160;</td>
+          <td class="paramname"><em>bgr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_y_u_v___capture.html">YUV_Capture</a> *&#160;</td>
+          <td class="paramname"><em>cap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>inits the Conversation from the YUV-File given by filenmae to OpenCV Mat </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variablen-Dokumentation</h2>
+<a class="anchor" id="a57a658ea4ab15bd64e3ce03550eaa1d5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string backoutstr = &quot;C:\\background.mkv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a62c1cae789f825edaa8f0900431b710e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string backstr = &quot;C:\\background.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a479522cbb8df2e32e4105410ca66e20b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VideoWriter backVideo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7959bc830725ccd7f6261d59bc1778af"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t* bufferBGR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a988c3306e17660881c1ae04a0e1fcf34"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VideoCapture capture</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8c91ecbe5847f4ae902ebd6143970da6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Mat cvFrameContext</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab1098de0662992fbc4c23e314074f4a2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CascadeClassifier eyes_cascade</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a53f51a6fe1e841c9dfa93426447743ef"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cv::String eyes_cascade_name = &quot;haarcascade_eye_tree_eyeglasses.xml&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1aabdc311a65aaaede4d72fa8fe95494"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CascadeClassifier face_cascade</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab9fef9b0bee8b212c2269922f08ae2a7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cv::String face_cascade_name = &quot;haarcascade_frontalface_alt.xml&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a088f929e12012100f8241f5edefb5077"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string faceoutstr = &quot;C:\\faces.mkv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac05db5c82958888cd7971f1c77b9dec0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structface_in_frame.html">faceInFrame</a>&gt; facesinFrame</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae0ec15cb6d5d8dd96150a28f26625bee"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structfacesfromframe.html">facesfromframe</a>&gt; facesVideo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a09832ba1892d87090a37caa514257ca4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VideoWriter faceVideo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a529018e105e46d0b6ad879c72477d5f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int fourcc_output_codec = CV_FOURCC('I', '4', '2', '0')</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a63da2a617b72a1630998a4d8b4d26cd3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double fps</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac8fa3e55e1552becf3a925844d5768f6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string fpsstr = &quot;25&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adf7b1f9482d110b725679536ea0eb293"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int frameFinished</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a47ba6cda63e9e2cd4d2846796f40b660"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string hevc_together = &quot;C:\\together.mkv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adccabe0638374057965e9c155bb170ba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Mat inFrames</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a96bf064430a8c608a5e32ea001a58384"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string inputfilename = &quot;C:\\testshort.mp4&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acad36f7a1211e9e9da68e181667d9c3f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad496af1d029ffb9ab9a60eafa31f550c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VideoWriter outputVideo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a053ed4ed31e793bc45c6a5349e8b6a22"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VideoWriter outtogether</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a76228b9abeb51e283dcd134ecb2ea446"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string outvideostr = &quot;C:\\video.mkv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1a6aa21083e62174c8d97039da5ef4f4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVCodec* pVCodec</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3b59098c21cf8840b02056b0353786c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVCodecContext* pVCodecCtx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad0da55f33789fb166f1b32e3f0fcd893"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVFormatContext* pVFormatCtx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab6d0994357aef679d10d3908af1af49a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVFrame* pVFrame</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a227aa288937bb7be95802a2bebdad042"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVFrame* pVFrameBGR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af285cd22a802b291c5f930864351cd61"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct SwsContext* pVImgConvertCtx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a08bbe8693b9c000265b3e58a0007ddd9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVPacket pVPacket</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0c60a987ed28783d11b8de968232b3cc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string roistr = &quot;C:\\faces.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4d6375d30d47d6711b2838525956af2d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Size S</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a503cd1bb749179b17a53653e1540f089"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sizestr = &quot;1920x10080&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3f4173fd4828d1d948935a30e1841263"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String test</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaf5ad476a95983d6613deb23a57c4973"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string videostr = &quot;C:\\video.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4541bb284c0dbb654186737bc8dbfea3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int videoStream</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8f0af612ab10eafc7f1647bf6a8699a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int wait4Cam = 2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa819764b7e23bf4f709eda39eb17eb79"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string window_name = &quot;Face detection &amp; ROI encoding using HEVC&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac99389d184ca31ff9a99b5e608bd8a85"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string yuv_encoded_back = &quot;C:\\yuv_back.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae7f9ea26811941ec3f177e984db7eba6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string yuv_encoded_face = &quot;C:\\yuv_face.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab21f568d14c4d57c2ce86d1af96135c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string yuv_encoded_one = &quot;C:\\yuv_one.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1ba0d74f2b03eb69076bfd9642a0307b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string yuv_together = &quot;C:\\together.yuv&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<hr class="footer"/>
+<address class="footer"><small>
+<p> Studienproject by <a href="http://www.hs-koblenz.de"><img class="footer" src="fh.png" alt="Hochschule Koblenz"/></a></p>
+Erzeugt von &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.5
+</small></address>

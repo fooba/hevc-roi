@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.5"/>
+<title>HEVC-ROI: cvtest/yuv.h Quellcode</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">HEVC-ROI
+   </div>
+   <div id="projectbrief">Facerecognition with OpenCV Convert to ROI for HEVC Encoding</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Erzeugt von Doxygen 1.8.5 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Hauptseite</span></a></li>
+      <li><a href="pages.html"><span>Zusätzliche&#160;Informationen</span></a></li>
+      <li><a href="annotated.html"><span>Klassen</span></a></li>
+      <li class="current"><a href="files.html"><span>Dateien</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Auflistung&#160;der&#160;Dateien</span></a></li>
+      <li><a href="globals.html"><span>Datei-Elemente</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_2eb347f79d91f5a86190bd940dca1c66.html">cvtest</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">yuv.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="yuv_8h.html">gehe zur Dokumentation dieser Datei</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef YUV_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define YUV_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//Original from https://github.com/mpenkov/opencv-yuv //</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="stdafx_8h.html">stdafx.h</a>&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;opencv2/highgui/highgui.hpp&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;opencv2/imgproc/imgproc.hpp&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">//#include &lt;cv.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">   18</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a3f8e00a8f20ff06cafce01fe69a44fd4">   20</a></span>&#160;    <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a3f8e00a8f20ff06cafce01fe69a44fd4">YUV_OK</a> = 0,             </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a8ad6b139c2a6594f3e9f5749275ab74e">   21</a></span>&#160;    <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a8ad6b139c2a6594f3e9f5749275ab74e">YUV_PARAMETER_ERROR</a>,    </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ade49bf1d4d82a17e5e4a5ac087d6940a">   23</a></span>&#160;                            <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ade49bf1d4d82a17e5e4a5ac087d6940a">YUV_OUT_OF_MEMORY</a>,      </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab2d92b660a9cf63d4a93df83528e6c6e">   24</a></span>&#160;                            <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab2d92b660a9cf63d4a93df83528e6c6e">YUV_IO_ERROR</a>,           </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab3bb9836eacff1dd2a35d9763d14986a">   27</a></span>&#160;                                                    <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab3bb9836eacff1dd2a35d9763d14986a">YUV_EOF</a>                 </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html">   36</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_y_u_v___capture.html">YUV_Capture</a></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a5e06502768b88c30147c2d201dcf32ae">   38</a></span>&#160;    FILE *<a class="code" href="struct_y_u_v___capture.html#a5e06502768b88c30147c2d201dcf32ae">fin</a>;              </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a491be824b6ae425816f737ad2463eef2">   39</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="struct_y_u_v___capture.html#a491be824b6ae425816f737ad2463eef2">width</a>;           </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#ae277b73d7353a066e9691246729849f4">   40</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="struct_y_u_v___capture.html#ae277b73d7353a066e9691246729849f4">height</a>;          </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#aafdd0a4ae41be22a316977c8f628e058">   42</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#aafdd0a4ae41be22a316977c8f628e058">y</a>;            </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a30d64102eb58c332f2d6fb251a7b9e52">   43</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#a30d64102eb58c332f2d6fb251a7b9e52">cb</a>;           </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a1f10d943e32c582da331cc9d5d1532c2">   44</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#a1f10d943e32c582da331cc9d5d1532c2">cr</a>;           </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#ae1cf77c1b5deecc81c490209bcb3a094">   45</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#ae1cf77c1b5deecc81c490209bcb3a094">cb_half</a>;      </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a241957af7a95b1473773e50612c7944d">   46</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#a241957af7a95b1473773e50612c7944d">cr_half</a>;      </div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="struct_y_u_v___capture.html#a1f64e1b0992a0e75333a43bc78fb1deb">   47</a></span>&#160;    IplImage *<a class="code" href="struct_y_u_v___capture.html#a1f64e1b0992a0e75333a43bc78fb1deb">ycrcb</a>;        </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">enum</span> <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="yuv_8cpp.html#a9d9a8c5042f56d1407d10311a172fd30">YUV_init</a>(FILE *fin, <span class="keywordtype">size_t</span> w, <span class="keywordtype">size_t</span> h, <span class="keyword">struct</span> <a class="code" href="struct_y_u_v___capture.html">YUV_Capture</a> *out);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">enum</span> <a class="code" href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="yuv_8cpp.html#a2ac89140a28007e735cb94eb4100ba3d">YUV_read</a>(<span class="keyword">struct</span> <a class="code" href="struct_y_u_v___capture.html">YUV_Capture</a> *cap);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<a class="code" href="yuv_8cpp.html#a03e6586920c8372964a4503f66f9ab65">YUV_cleanup</a>(<span class="keyword">struct</span> <a class="code" href="struct_y_u_v___capture.html">YUV_Capture</a> *cap);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30ade49bf1d4d82a17e5e4a5ac087d6940a"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ade49bf1d4d82a17e5e4a5ac087d6940a">YUV_OUT_OF_MEMORY</a></div><div class="ttdef"><b>Definition:</b> yuv.h:23</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_ae1cf77c1b5deecc81c490209bcb3a094"><div class="ttname"><a href="struct_y_u_v___capture.html#ae1cf77c1b5deecc81c490209bcb3a094">YUV_Capture::cb_half</a></div><div class="ttdeci">IplImage * cb_half</div><div class="ttdef"><b>Definition:</b> yuv.h:45</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_ae277b73d7353a066e9691246729849f4"><div class="ttname"><a href="struct_y_u_v___capture.html#ae277b73d7353a066e9691246729849f4">YUV_Capture::height</a></div><div class="ttdeci">size_t height</div><div class="ttdef"><b>Definition:</b> yuv.h:40</div></div>
+<div class="ttc" id="yuv_8cpp_html_a03e6586920c8372964a4503f66f9ab65"><div class="ttname"><a href="yuv_8cpp.html#a03e6586920c8372964a4503f66f9ab65">YUV_cleanup</a></div><div class="ttdeci">void YUV_cleanup(struct YUV_Capture *cap)</div><div class="ttdef"><b>Definition:</b> yuv.cpp:81</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a30d64102eb58c332f2d6fb251a7b9e52"><div class="ttname"><a href="struct_y_u_v___capture.html#a30d64102eb58c332f2d6fb251a7b9e52">YUV_Capture::cb</a></div><div class="ttdeci">IplImage * cb</div><div class="ttdef"><b>Definition:</b> yuv.h:43</div></div>
+<div class="ttc" id="yuv_8cpp_html_a2ac89140a28007e735cb94eb4100ba3d"><div class="ttname"><a href="yuv_8cpp.html#a2ac89140a28007e735cb94eb4100ba3d">YUV_read</a></div><div class="ttdeci">enum YUV_ReturnValue YUV_read(struct YUV_Capture *cap)</div><div class="ttdef"><b>Definition:</b> yuv.cpp:55</div></div>
+<div class="ttc" id="stdafx_8h_html"><div class="ttname"><a href="stdafx_8h.html">stdafx.h</a></div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a1f10d943e32c582da331cc9d5d1532c2"><div class="ttname"><a href="struct_y_u_v___capture.html#a1f10d943e32c582da331cc9d5d1532c2">YUV_Capture::cr</a></div><div class="ttdeci">IplImage * cr</div><div class="ttdef"><b>Definition:</b> yuv.h:44</div></div>
+<div class="ttc" id="yuv_8cpp_html_a9d9a8c5042f56d1407d10311a172fd30"><div class="ttname"><a href="yuv_8cpp.html#a9d9a8c5042f56d1407d10311a172fd30">YUV_init</a></div><div class="ttdeci">enum YUV_ReturnValue YUV_init(FILE *fin, size_t w, size_t h, struct YUV_Capture *out)</div><div class="ttdef"><b>Definition:</b> yuv.cpp:16</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a491be824b6ae425816f737ad2463eef2"><div class="ttname"><a href="struct_y_u_v___capture.html#a491be824b6ae425816f737ad2463eef2">YUV_Capture::width</a></div><div class="ttdeci">size_t width</div><div class="ttdef"><b>Definition:</b> yuv.h:39</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a5e06502768b88c30147c2d201dcf32ae"><div class="ttname"><a href="struct_y_u_v___capture.html#a5e06502768b88c30147c2d201dcf32ae">YUV_Capture::fin</a></div><div class="ttdeci">FILE * fin</div><div class="ttdef"><b>Definition:</b> yuv.h:38</div></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30">YUV_ReturnValue</a></div><div class="ttdeci">YUV_ReturnValue</div><div class="ttdef"><b>Definition:</b> yuv.h:18</div></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30a8ad6b139c2a6594f3e9f5749275ab74e"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a8ad6b139c2a6594f3e9f5749275ab74e">YUV_PARAMETER_ERROR</a></div><div class="ttdef"><b>Definition:</b> yuv.h:21</div></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30a3f8e00a8f20ff06cafce01fe69a44fd4"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30a3f8e00a8f20ff06cafce01fe69a44fd4">YUV_OK</a></div><div class="ttdef"><b>Definition:</b> yuv.h:20</div></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30ab2d92b660a9cf63d4a93df83528e6c6e"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab2d92b660a9cf63d4a93df83528e6c6e">YUV_IO_ERROR</a></div><div class="ttdef"><b>Definition:</b> yuv.h:24</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a241957af7a95b1473773e50612c7944d"><div class="ttname"><a href="struct_y_u_v___capture.html#a241957af7a95b1473773e50612c7944d">YUV_Capture::cr_half</a></div><div class="ttdeci">IplImage * cr_half</div><div class="ttdef"><b>Definition:</b> yuv.h:46</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html"><div class="ttname"><a href="struct_y_u_v___capture.html">YUV_Capture</a></div><div class="ttdef"><b>Definition:</b> yuv.h:36</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_aafdd0a4ae41be22a316977c8f628e058"><div class="ttname"><a href="struct_y_u_v___capture.html#aafdd0a4ae41be22a316977c8f628e058">YUV_Capture::y</a></div><div class="ttdeci">IplImage * y</div><div class="ttdef"><b>Definition:</b> yuv.h:42</div></div>
+<div class="ttc" id="struct_y_u_v___capture_html_a1f64e1b0992a0e75333a43bc78fb1deb"><div class="ttname"><a href="struct_y_u_v___capture.html#a1f64e1b0992a0e75333a43bc78fb1deb">YUV_Capture::ycrcb</a></div><div class="ttdeci">IplImage * ycrcb</div><div class="ttdef"><b>Definition:</b> yuv.h:47</div></div>
+<div class="ttc" id="yuv_8h_html_a485eced946bcf355d26ebc3f07c59b30ab3bb9836eacff1dd2a35d9763d14986a"><div class="ttname"><a href="yuv_8h.html#a485eced946bcf355d26ebc3f07c59b30ab3bb9836eacff1dd2a35d9763d14986a">YUV_EOF</a></div><div class="ttdef"><b>Definition:</b> yuv.h:27</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<hr class="footer"/>
+<address class="footer"><small>
+<p> Studienproject by <a href="http://www.hs-koblenz.de"><img class="footer" src="fh.png" alt="Hochschule Koblenz"/></a></p>
+Erzeugt von &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.5
+</small></address>
