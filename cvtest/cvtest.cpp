@@ -46,16 +46,23 @@ typedef struct{
 	std::vector<Rect> rect;
 }faceInFrame;
 
-#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
-#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+//#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
+//#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
 
 /**
   * Definitions for Bitrates
 */
-#define BITRATE_ONE       "10k"
+#define BITRATE_ONE       "400k"
 #define BITRATE_FACE	  "700k"
-#define BITRATE_SURROUND  "5k"
+#define BITRATE_SURROUND  "550k"
+
+/**
+  * Definitionen der groessen des zu extrahierenden Gesichtsvideos
+*/
+#define FACES_VIDEO_WIDTH   500
+#define FACES_VIDEO_HEIGHT  500
+
 
 const std::string inputfilename    = "C:\\testshort.mp4";
 const std::string roistr		   = "C:\\faces.yuv";
@@ -484,7 +491,8 @@ int startVid(void){
 	}
 
 	//Video for Faces
-	if (!faceVideo.open(roistr, fourcc_output_codec, fps, S, true)){
+	
+	if (!faceVideo.open(roistr, fourcc_output_codec, fps, cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), true)){
 		cout << "Could not create facevideo writer...." << endl;
 		return -1;
 	}
@@ -501,8 +509,7 @@ int startVid(void){
 		return -1;
 	}
 
-	if (!faceVideo.isOpened())
-	{
+	if (!backVideo.isOpened()){
 		cout << "Could not open the output background Stream to write... " << endl;
 		return -1;
 	}
@@ -519,6 +526,7 @@ int startVid(void){
 	Mat roi;
 	int f = 0;
 	int anzahlFaces = 0;
+	double maxFrameSizeX = 0.0, maxFrameSizeY = 0.0; //biggest Facesize in X and Y
 	while (capture.read(frame)){
 		cout << "  frame: " << ++f << endl;
 
@@ -544,6 +552,10 @@ int startVid(void){
 					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
+					//detect biggest frame size
+					(faces[i].width > maxFrameSizeX)  ? maxFrameSizeX = faces[i].width  : maxFrameSizeX ;
+					(faces[i].height > maxFrameSizeY) ? maxFrameSizeY = faces[i].height : maxFrameSizeY ;
+
 					//Region of Interest = gesicht
 					roi = frame(faces.at(i));
 					imshow("face", roi);
@@ -571,8 +583,10 @@ int startVid(void){
 		else cout << "ERROR: Null Frame..." << endl;
 		framecounter++;
 	}
+	cout << " biggest Frame: w: " << maxFrameSizeX << " h: " << maxFrameSizeY;
 	cout << " total " << anzahlFaces << " faces detected" << endl;
 	cout << " faces array "<< facesinFrame.size() << endl;
+	cvWaitKey(0);
 	return 0;
 }
 
@@ -725,7 +739,8 @@ bool querryFrame(void){
 
 int encodeCmd(std::string filename, std::string outfilename, std::string bitrate){
 	int ret = 0;
-	std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 -loglevel quiet " + outfilename;
+	//std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 -loglevel quiet " + outfilename;
+	std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 " + outfilename;
 	cout << endl << "Encodeing msg: " << endl;
 	cout << befehl << endl;
 	ret = system(befehl.c_str());	
