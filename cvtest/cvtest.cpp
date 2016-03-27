@@ -62,6 +62,13 @@ typedef struct{
 */
 #define FACES_VIDEO_WIDTH   500
 #define FACES_VIDEO_HEIGHT  500
+#define FACES_PRINT_MAX
+
+/**
+  * Definitionen damit Gesicht groesser ausgeschnitten wird
+*/
+#define FACE_BIG_TOP	0.25
+#define FACE_BIG_BTM	0.25
 
 
 const std::string inputfilename    = "C:\\testshort.mp4";
@@ -531,7 +538,7 @@ int startVid(void){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		//if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
+		if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -552,6 +559,10 @@ int startVid(void){
 					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
+					//Erweiterung der Höhe in Stirn und Kinn
+					//((faces.at(i).y + faces.at(i).height * FACE_BIG_TOP) < S.height) ? faces.at(i).y = faces.at(i).y + faces.at(i).height * FACE_BIG_TOP : faces.at(i).y = S.height;
+					//faces.at(i).height += (FACE_BIG_TOP + FACE_BIG_BTM) * faces.at(i).height;
+
 					//detect biggest frame size
 					(faces[i].width > maxFrameSizeX)  ? maxFrameSizeX = faces[i].width  : maxFrameSizeX ;
 					(faces[i].height > maxFrameSizeY) ? maxFrameSizeY = faces[i].height : maxFrameSizeY ;
@@ -583,10 +594,13 @@ int startVid(void){
 		else cout << "ERROR: Null Frame..." << endl;
 		framecounter++;
 	}
-	cout << " biggest Frame: w: " << maxFrameSizeX << " h: " << maxFrameSizeY;
 	cout << " total " << anzahlFaces << " faces detected" << endl;
 	cout << " faces array "<< facesinFrame.size() << endl;
-	cvWaitKey(0);
+#ifdef 	FACES_PRINT_MAX
+	cout << " biggest Frame: w: " << maxFrameSizeX << " h: " << maxFrameSizeY << endl;
+	cout << "Press Enter to continue..." << endl;
+	cin.ignore();
+#endif
 	return 0;
 }
 
