@@ -500,8 +500,8 @@ int startVid(void){
 	}
 
 	//Video for Faces
-	
-	if (!faceVideo.open(roistr, fourcc_output_codec, fps, cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), true)){
+	if (!faceVideo.open(roistr, fourcc_output_codec, fps, S, true)){ //TODO
+	//if (!faceVideo.open(roistr, fourcc_output_codec, fps, cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), true)){
 		cout << "Could not create facevideo writer...." << endl;
 		return -1;
 	}
