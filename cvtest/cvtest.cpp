@@ -173,7 +173,7 @@ bool querryFrame(void);
 /**
  * @brief encodiert als HEVC mit Command-line Prompt
 */
-int encodeCmd(std::string filename, std::string outfilename, std::string bitrate);
+int encodeCmd(std::string filename, std::string outfilename, std::string bitrate, std::string vsize);
 
 /**
   * @brief decode inFile in outFile
@@ -225,11 +225,13 @@ int main(){
 	}
 	else{
 		cout << "HEVC decoding video" << endl;
-		encodeCmd(videostr, outvideostr,BITRATE_ONE);
+		encodeCmd(videostr, outvideostr,BITRATE_ONE, sizestr);
 		cout << "HEVC decoding background " << endl;
-		encodeCmd(backstr, backoutstr, BITRATE_SURROUND);
+		encodeCmd(backstr, backoutstr, BITRATE_SURROUND, sizestr);
 		cout << "HEVC decoding faces" << endl;
-		encodeCmd(roistr, faceoutstr,BITRATE_FACE);
+		std::ostringstream fsize;
+		fsize << FACES_VIDEO_WIDTH << "x" << FACES_VIDEO_HEIGHT;
+		encodeCmd(roistr, faceoutstr, BITRATE_FACE, fsize.str());
 		
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
@@ -500,8 +502,8 @@ int startVid(void){
 	}
 
 	//Video for Faces
-	if (!faceVideo.open(roistr, fourcc_output_codec, fps, S, true)){ //TODO
-	//if (!faceVideo.open(roistr, fourcc_output_codec, fps, cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), true)){
+	//if (!faceVideo.open(roistr, fourcc_output_codec, fps, S, true)){ //TODO
+	if (!faceVideo.open(roistr, fourcc_output_codec, fps, cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), true)){
 		cout << "Could not create facevideo writer...." << endl;
 		return -1;
 	}
@@ -540,7 +542,7 @@ int startVid(void){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		//if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
+		if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -582,11 +584,14 @@ int startVid(void){
 
 					//Region of Interest = gesicht
 					roi = frame(faces.at(i));
-					imshow("face", roi);
+					imshow("roi", roi);
 					waitKey(1);
 					cout << "writing face no. " << i + 1 << endl;
-					Mat lroi = Mat::zeros(S, roi.type());
+					Mat lroi = Mat::zeros(cv::Size(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), roi.type());
+					//Mat lroi = Mat::zeros(S, roi.type());
 					roi.copyTo(lroi(Rect(0, 0, roi.cols, roi.rows)));
+					imshow("lroi", lroi);
+					waitKey(1);
 					faceVideo << lroi;
 
 					//Speichere die Gesichter in Vektor zur spaeteren Zusammenfuerung
@@ -764,11 +769,11 @@ bool querryFrame(void){
 }
 
 
-int encodeCmd(std::string filename, std::string outfilename, std::string bitrate){
+int encodeCmd(std::string filename, std::string outfilename, std::string bitrate, std::string vsize){
 	int ret = 0;
-	//std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 -loglevel quiet " + outfilename;
-	std::string befehl = "ffmpeg -y -s:v " + sizestr + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 " + outfilename;
-	cout << endl << "Encodeing msg: " << endl;
+	//std::string befehl = "ffmpeg -y -s:v " + vsize + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 -loglevel quiet " + outfilename;
+	std::string befehl = "ffmpeg -y -s:v " + vsize + " -r " + fpsstr + " -i " + filename + " -b:v " + bitrate + " -bufsize " + bitrate + " -c:v libx265 " + outfilename;
+	cout << endl << "Encoding msg: " << endl;
 	cout << befehl << endl;
 	ret = system(befehl.c_str());	
 	return ret;
