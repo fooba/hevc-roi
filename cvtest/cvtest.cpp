@@ -46,8 +46,8 @@ typedef struct{
 	std::vector<Rect> rect;
 }faceInFrame;
 
-//#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
-//#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
+#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
 
 /**
@@ -62,13 +62,15 @@ typedef struct{
 */
 #define FACES_VIDEO_WIDTH   500
 #define FACES_VIDEO_HEIGHT  500
-#define FACES_PRINT_MAX
+//#define FACES_PRINT_MAX
 
 /**
   * Definitionen damit Gesicht groesser ausgeschnitten wird
 */
-#define FACE_BIG_TOP	0.25
-#define FACE_BIG_BTM	0.25
+#define FACE_BIG_TOP	0.2
+#define FACE_BIG_BTM	0.2
+#define FACE_BIG_LEFT	0.05
+#define FACE_BIG_RIGHT	0.05
 
 
 const std::string inputfilename    = "C:\\testshort.mp4";
@@ -538,7 +540,7 @@ int startVid(void){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
+		//if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
@@ -554,15 +556,26 @@ int startVid(void){
 					//cin.ignore();
 					anzahlFaces--;
 				}else{
+
+#ifdef WITH_FACE_RECTANGLE
+					Point p21(faces[i].x, faces[i].y); //Oben links vom Gesicht
+					Point p22(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
+					rectangle(frame, p21, p22, Scalar(0, 255, 0), 4, 8, 0); //Rechteck ums Gesicht
+#endif
+
+					//Erweiterung der Höhe in Stirn und Kinn 
+					//height
+					((faces.at(i).y + faces.at(i).height * FACE_BIG_TOP) < S.height) ? faces.at(i).y = faces.at(i).y - faces.at(i).height * FACE_BIG_TOP : faces.at(i).y = S.height;
+					faces.at(i).height += (FACE_BIG_TOP + FACE_BIG_BTM) * faces.at(i).height;
+					//width
+					((faces.at(i).x + faces.at(i).x * FACE_BIG_RIGHT) < S.width) ? faces.at(i).x = faces.at(i).x - faces.at(i).width * FACE_BIG_RIGHT : faces.at(i).x = S.width;
+					faces.at(i).width += (FACE_BIG_LEFT + FACE_BIG_RIGHT) * faces.at(i).width;
+
 #ifdef WITH_FACE_RECTANGLE
 					Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
 					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
 					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
 #endif
-					//Erweiterung der Höhe in Stirn und Kinn
-					//((faces.at(i).y + faces.at(i).height * FACE_BIG_TOP) < S.height) ? faces.at(i).y = faces.at(i).y + faces.at(i).height * FACE_BIG_TOP : faces.at(i).y = S.height;
-					//faces.at(i).height += (FACE_BIG_TOP + FACE_BIG_BTM) * faces.at(i).height;
-
 					//detect biggest frame size
 					(faces[i].width > maxFrameSizeX)  ? maxFrameSizeX = faces[i].width  : maxFrameSizeX ;
 					(faces[i].height > maxFrameSizeY) ? maxFrameSizeY = faces[i].height : maxFrameSizeY ;
