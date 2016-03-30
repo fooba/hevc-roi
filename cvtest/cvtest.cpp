@@ -47,21 +47,21 @@ typedef struct{
 }faceInFrame;
 
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
-#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+//#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
 
 /**
   * Definitions for Bitrates
 */
 #define BITRATE_ONE       "400k"
-#define BITRATE_FACE	  "700k"
-#define BITRATE_SURROUND  "550k"
+#define BITRATE_FACE	  "500k"
+#define BITRATE_SURROUND  "300k"
 
 /**
   * Definitionen der groessen des zu extrahierenden Gesichtsvideos
 */
-#define FACES_VIDEO_WIDTH   500
-#define FACES_VIDEO_HEIGHT  500
+#define FACES_VIDEO_WIDTH   300
+#define FACES_VIDEO_HEIGHT  450
 //#define FACES_PRINT_MAX
 
 /**
@@ -134,12 +134,6 @@ char key;
   * Zeigt mehrere Imgs in einem Fenster an
 */
 extern void cvShowManyImages(char* title, int nArgs, ...);
-
-/**
-* @brief start an openCV session to the webcam and detect faces in stream
-*        quit with escape-btn
-*/
-void startCam(void);
 
 /**
 * @brief start an openCV session to the webcam and detect faces in stream
@@ -353,10 +347,10 @@ int main(){
 					f_face = fopen(yuv_encoded_face.c_str(), "rb");
 					if (!f_face)
 						cout << "Couldn't open " << yuv_encoded_face << "to convert to CV" << endl;
-					ret_face = YUV_init(f_face, S.width, S.height, &cap_face);
+					ret_face = YUV_init(f_face, FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT, &cap_face);
 					if (ret != YUV_OK)
 						cout << "YUV_Init failed by " << yuv_encoded_face << endl;
-					bgr_face = *(cvCreateImage(cvSize(S.width, S.height), IPL_DEPTH_8U, 3));
+					bgr_face = *(cvCreateImage(cvSize(FACES_VIDEO_WIDTH, FACES_VIDEO_HEIGHT), IPL_DEPTH_8U, 3));
 					if (!&bgr_face)
 						cout << "bgr_create image failed by" << yuv_encoded_face << endl;
 					//decode
@@ -418,49 +412,6 @@ int main(){
 	cout << " Press Enter to exit..." << endl;
 	cin.ignore();
 	return ret;
-}
-
-void startCam(void){
-	cout << "clicked" << endl;
-
-	VideoCapture capture;
-	Mat frame;
-
-	//-- 1. Load the cascades
-	if (!face_cascade.load(face_cascade_name)){ cout << "--(!)Error loading: " << face_cascade_name << "\n" << endl; return; };
-
-	//-- 2. Read the video stream
-	capture.open(0);
-
-
-	while (1){
-		if (capture.isOpened()){
-
-			capture.read(frame);
-			if (!frame.empty()){
-				std::vector<Rect> faces = detectFaces(frame);
-				for (size_t i = 0; i < faces.size(); i++) //"Male" Rechteck um jedes Gesicht
-				{
-					Point p1(faces[i].x, faces[i].y); //Oben links vom Gesicht
-					Point p2(faces[i].x + faces[i].width, faces[i].y + faces[i].height); //Unten rechts vom Gesicht
-					rectangle(frame, p1, p2, Scalar(255, 0, 255), 4, 8, 0); //Rechteck ums Gesicht
-				}
-				imshow(window_name, frame); //Zeige frame
-			}
-			else{
-				wait4Cam--;
-				if (wait4Cam <= 0)
-					printf(" --(!) No captured frame -- :( !");
-			}
-		}
-		else cout << "keine Webcam ";
-		key = cvWaitKey(10);     //Capture Keyboard stroke
-		if (char(key) == 27){
-			break;      //If you hit ESC key loop will break.
-		}
-	}
-
-	//	cvReleaseCapture(&capture); //Release capture.
 }
 
 int startVid(void){
@@ -542,7 +493,7 @@ int startVid(void){
 		cout << "  frame: " << ++f << endl;
 
 		//TODO 
-		if (f >= 12) break; //TODO ONLY READ first 2 FRAMES
+		//if (f >= 12) break; //TODO ONLY READ first 12 FRAMES
 
 		if (!frame.empty()){
 			std::vector<Rect> faces = detectFaces(frame);
