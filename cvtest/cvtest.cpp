@@ -54,14 +54,14 @@ typedef struct{
   * Definitions for Bitrates
 */
 #define BITRATE_ONE       "400k"
-#define BITRATE_FACE	  "500k"
-#define BITRATE_SURROUND  "300k"
+#define BITRATE_FACE	  "440k"
+#define BITRATE_SURROUND  "360k"
 
 /**
   * Definitionen der groessen des zu extrahierenden Gesichtsvideos
 */
-#define FACES_VIDEO_WIDTH   300
-#define FACES_VIDEO_HEIGHT  450
+#define FACES_VIDEO_WIDTH   320
+#define FACES_VIDEO_HEIGHT  400
 //#define FACES_PRINT_MAX
 
 /**
