@@ -47,22 +47,22 @@ typedef struct{
 }faceInFrame;
 
 #define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
-//#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
 
 /**
   * Definitions for Bitrates
 */
-#define BITRATE_ONE       "400k"
-#define BITRATE_FACE	  "440k"
-#define BITRATE_SURROUND  "360k"
+#define BITRATE_ONE       "300k"
+#define BITRATE_FACE	  "350k"
+#define BITRATE_SURROUND  "250k"
 
 /**
   * Definitionen der groessen des zu extrahierenden Gesichtsvideos
 */
-#define FACES_VIDEO_WIDTH   320
-#define FACES_VIDEO_HEIGHT  400
-//#define FACES_PRINT_MAX
+#define FACES_VIDEO_WIDTH   640
+#define FACES_VIDEO_HEIGHT  360
+#define FACES_PRINT_MAX
 
 /**
   * Definitionen damit Gesicht groesser ausgeschnitten wird
@@ -73,7 +73,7 @@ typedef struct{
 #define FACE_BIG_RIGHT	0.05
 
 
-const std::string inputfilename    = "C:\\testshort.mp4";
+const std::string inputfilename    = "C:\\merkel2.mp4";
 const std::string roistr		   = "C:\\faces.yuv";
 const std::string videostr		   = "C:\\video.yuv";
 const std::string backstr		   = "C:\\background.yuv";
