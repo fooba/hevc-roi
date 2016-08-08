@@ -46,34 +46,34 @@ typedef struct{
 	std::vector<Rect> rect;
 }faceInFrame;
 
-#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
-#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
+//#define SHOW_DETECTED_FACES //comment for no output of the frames in face detection
+//#define WITH_FACE_RECTANGLE //comment for no Rectangle in ouput file where Face is detected
 #define GROP_FACE_SIZE 0.1 //Face must be greater than GROP_FACE_SIZE*InputVideo.Width
 
 /**
   * Definitions for Bitrates
 */
-#define BITRATE_ONE       "300k"
-#define BITRATE_FACE	  "350k"
-#define BITRATE_SURROUND  "250k"
+#define BITRATE_ONE       "500k"
+#define BITRATE_FACE	  "600k"
+#define BITRATE_SURROUND  "400k"
 
 /**
   * Definitionen der groessen des zu extrahierenden Gesichtsvideos
 */
-#define FACES_VIDEO_WIDTH   640
-#define FACES_VIDEO_HEIGHT  360
+#define FACES_VIDEO_WIDTH   1280	
+#define FACES_VIDEO_HEIGHT  720
 #define FACES_PRINT_MAX
 
 /**
   * Definitionen damit Gesicht groesser ausgeschnitten wird
 */
-#define FACE_BIG_TOP	0.2
+#define FACE_BIG_TOP	0.3
 #define FACE_BIG_BTM	0.2
 #define FACE_BIG_LEFT	0.05
 #define FACE_BIG_RIGHT	0.05
 
 
-const std::string inputfilename    = "C:\\merkel2.mp4";
+const std::string inputfilename    = "C:\\tagesschau_720_cut.mp4";
 const std::string roistr		   = "C:\\faces.yuv";
 const std::string videostr		   = "C:\\video.yuv";
 const std::string backstr		   = "C:\\background.yuv";
@@ -100,8 +100,8 @@ Size S;
 double fps;
 
 //Std Framerate und Groesse, aenderbar auf eingangsvideo oder aehnlichem
-std::string fpsstr = "25";
-std::string sizestr = "1920x10080";
+std::string fpsstr = "29";
+std::string sizestr = "1280x720";
 
 String test;
 //cv::String face_cascade_name = "haarcascade_frontalface_default.xml";
